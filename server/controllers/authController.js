@@ -8,47 +8,33 @@ const authController = {
 
         try {
 
-            /** User data in request's body. */
+            /** User's (VALIDATED) data in request's body. */
             const userData = req.body;
-
-
-
-            /** Validated user data in standardized form. */
-            let standardizedUserData = {};
-
-
-
-            /* Validating user data and converting to standardized from */
-            try { standardizedUserData = await validateAndStandardizeUserData(userData); }
-            catch (err) { return res.status(400).json({ message: err.message }); }
-
-
-
             /* username, email password from user data */
-            const { username, email, password } = standardizedUserData;
+            const { username, email, password } = userData;
 
 
 
             /** User with same username as provided for the new user being registered. */
             const existingUserUsername = await User.findOne({ username }); // catch block, 500 error
-            if (existingUserUsername) return res.status(400).json({ message: 'This username is already taken.' });
+            if (existingUserUsername) return res.status(409).json({ param: "username", msg: 'This username is already taken.' });
 
 
 
             /** User with same email as provided for the new user being registered. */
             const existingUserEmail = await User.findOne({ email }); // catch block, 500 error
-            if (existingUserEmail) return res.status(400).json({ message: 'This email already exists.' });
+            if (existingUserEmail) return res.status(409).json({ param: "email", msg: 'This email already exists.' });
 
 
 
             /** Password hashed by bcrypt. */
             const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
-            standardizedUserData.password = passwordHash;
+            userData.password = passwordHash;
 
 
 
             /** New user document with all the provided fields. */
-            const newUser = new User(standardizedUserData);
+            const newUser = new User(userData);
             /* Saving the new user */
             await newUser.save()
 
@@ -91,7 +77,7 @@ const authController = {
 
         } catch (err) {
 
-            return res.status(500).json({ message: err.message });
+            return res.status(500).json({ msg: err.message });
         }
 
 
@@ -117,20 +103,20 @@ const authController = {
 
             /** Refresh token from the cookies (using cookie-parser) sent along with request. */
             const refresh_token = req.cookies.refreshtoken;
-            if (!refresh_token) return res.status(401).json({ message: 'Please Login to Continue.' });
+            if (!refresh_token) return res.status(401).json({ msg: 'Please Login to Continue.' });
 
 
 
             /* Verifying the refresh token -> result : decoded object */
             jwt.verify(refresh_token, process.env.JWT_REFRESH_TOKEN_SECRET, async (err, result) => {
 
-                if (err) return res.status(401).json({ message: err.message });
+                if (err) return res.status(401).json({ msg: err.message });
 
 
 
                 /** User with same credentials as in refresh token of request. */
                 const user = await User.findOne({ _id: result._id }).select('-password');
-                if (!user) return res.status(401).json({ message: 'Please Login to Continue.' });
+                if (!user) return res.status(401).json({ msg: 'Please Login to Continue.' });
 
 
 
@@ -157,100 +143,6 @@ const authController = {
     }
 
 
-
-}
-
-
-
-/**
- * Validates the user data and converts it to standardized form.
- * @param {{
- * fullName: String, 
- * username: String,
- * email: String,
- * password: String,
- * gender: String
- * }} userData An object which contains user data
- * @returns Standardized user data
- */
-const validateAndStandardizeUserData = async (userData) => {
-
-    const { fullName, username, email, password, gender } = userData;
-
-
-    /* Checking whether fullname is provided */
-    if (!fullName) throw new Error('Full Name is required.');
-
-    /** Fullname without any starting or ending spaces. */
-    const standardizedFullName = fullName.trim();
-
-    /* Checking the length for fullname */
-    if (standardizedFullName.length > 25)
-        throw new Error('Fullname can not be more than 25 characters.');
-
-
-
-    /* Checking whether username is provided */
-    if (!username) throw new Error('Username is required.');
-
-    /** Username in lowercase without any spaces in between. */
-    const standardizedUsername = username.toLowerCase().replace(/ /g, '');
-
-    /* Checking the min length for username */
-    if (standardizedUsername.length < 3)
-        throw new Error('Username should be atleast 3 characters long.');
-
-    /* Checking the max length for username */
-    if (standardizedUsername.length > 25)
-        throw new Error('Username can not be more than 25 characters.');
-
-
-
-    /* Checking whether email is provided */
-    if (!email) throw new Error('Email is required.');
-
-    /** Email without any starting or ending spaces. */
-    const standardizedEmail = email.trim();
-
-    /* Checking whether email is valid */
-    const emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!(emailRegEx.test(standardizedEmail)))
-        throw new Error('Invalid email address.');
-
-
-
-    /* Checking whether password is provided */
-    if (!password) throw new Error('Password is required.');
-
-    /* Checking the minimum password length */
-    if (password.length < 6)
-        throw new Error('Password must be atleast 6 characters.');
-
-
-
-    /* Checking whether password is provided */
-    if (!gender) throw new Error('Gender is required.');
-
-    /** Lower-cased gender provided by user. */
-    const standardizedGender = gender.toLowerCase();
-
-    /* It should be from the given options only */
-    if (standardizedGender != 'male' && standardizedGender != 'female' && standardizedGender != 'others')
-        throw new Error('Invalid gender.');
-
-
-
-    /** Validated and Standardized user data. */
-    const newUserData = {
-        ...userData,
-        fullName: standardizedFullName,
-        username: standardizedUsername,
-        email: standardizedEmail,
-        gender: standardizedGender,
-    }
-
-
-    return (newUserData);
 
 }
 
