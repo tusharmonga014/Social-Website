@@ -1,14 +1,18 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import PageRender from "./PageRender";
+import Login from "./pages/login/index";
+import Register from "./pages/register/index";
+// import PageRender from "./PageRender";
 
 function App() {
   return (
-    <Router>
-      <div className='app'>
-        <Route exact path='/:page' component={PageRender} />
-        <Route exact path='/:page/:id' component={PageRender} />
-      </div>
-    </Router>
+    <div className='app'>
+      <Router>
+        <Route exact path="/" component={Login} />
+        <Route exact path="/register" component={Register} />
+        {/* <Route exact path='/:page' component={PageRender} />
+        <Route exact path='/:page/:id' component={PageRender} /> */}
+      </Router>
+    </div>
   );
 }
 
