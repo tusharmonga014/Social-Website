@@ -12,7 +12,7 @@ const getReqRoute = (req) => {
 
         /** Will contain the whole url of a req, example: register user - /api/auth/register. */
         const routePath = req.originalUrl;
-        /** Route patb with starting '/' removed. */
+        /** Route path with starting '/' removed. */
         const routePathWithoutStartingSlash = routePath.substring(1);
         /** Starting index of route path after 'api/'. */
         const reqRouteStartIndex = routePathWithoutStartingSlash.indexOf('/') + 1;
@@ -20,7 +20,7 @@ const getReqRoute = (req) => {
         const reqRoute = routePathWithoutStartingSlash.substring(reqRouteStartIndex);
         /** Length. */
         const length = reqRoute.length;
-        /** Route patb with ending '/' removed. */
+        /** Route path with ending '/' removed. */
         const routePathWithoutEndingSlash = reqRoute.charAt(length - 1) === '/' ?
             reqRoute.substring(0, length - 1) : reqRoute;
         /* Returning the route path */
@@ -43,7 +43,7 @@ const getReqRoute = (req) => {
 const getReqRouteValidationRules = (req) => {
     let reqRoute = '';
 
-    try { reqRoute = getReqRoute(req); console.log("rec : " + reqRoute) }
+    try { reqRoute = getReqRoute(req); }
     catch (err) { throw new Error(err.message); }
 
     try { return require(`./${reqRoute}`); }
