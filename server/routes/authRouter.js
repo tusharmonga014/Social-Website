@@ -5,7 +5,7 @@ const validateData = require('../middlewares/validators');
 
 authRouter.post('/register', validateData.register, authController.register);
 
-authRouter.post('/login', authController.login);
+authRouter.post('/login', validateData.login, authController.login);
 
 authRouter.post('/logout', authController.logout);
 

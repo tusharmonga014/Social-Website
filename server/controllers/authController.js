@@ -85,7 +85,93 @@ const authController = {
 
 
 
-    login: (req, res) => {
+    login: async (req, res) => {
+
+        try {
+
+            /** Username/Email, Password recieved in the req's body. */
+            const { usernameOrEmail, password } = req.body;
+
+
+
+            /** User to be returned if found. */
+            let user = {};
+
+
+
+            /** Email regular expression. */
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            /** Determines whether email is passed or username. True : email, False : username. */
+            const isEmail = emailRegex.test(usernameOrEmail);
+
+
+
+            if (isEmail) {
+
+
+                /** User with same email as provided by the user. */
+                const existingUserEmail = await User.findOne({ email: usernameOrEmail }); // catch block, 500 error
+                if (!existingUserEmail) return res.status(404).json({ param: 'usernameOrEmail', msg: 'Email is not registered.' });
+                else user = existingUserEmail;
+
+
+            } else {
+
+
+                /** User with same username as provided by the user. */
+                const existingUserUsername = await User.findOne({ username: usernameOrEmail }); // catch block, 500 error
+                if (!existingUserUsername) return res.status(404).json({ param: 'usernameOrEmail', msg: 'Username is not registered.' });
+                else user = existingUserUsername;
+
+
+            }
+
+
+            /** Boolean value which represents whether the passwords matched or not. */
+            const passwordMatched = await bcrypt.compare(password, user.password);
+            if (!passwordMatched) return res.status(401).json({ param: 'password', msg: 'Password does not match. Try Again.' });
+
+
+
+            /** User data which needs to be sent with reponse */
+            const userDataResponse = user._doc;
+            /* Password should not be sent back in response*/
+            delete userDataResponse.password;
+
+
+
+            /** Access Token for authentication. */
+            const access_token = createAccessToken({ _id: user._id });
+            /** Refesh Token for generating new access_token when current access token expires. */
+            const refresh_token = createRefreshToken({ _id: user._id });
+
+
+
+            /* https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#JavaScript_access_using_Document.cookie */
+            const refreshTokenCookieOptions = {
+                httpOnly: true, // Use the HttpOnly attribute to prevent access to cookie values via JavaScript
+                path: '/api/auth/refresh_token', // Cookie will only come with req, when on this api endpoint
+                // secure: true, // For only https
+                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+            };
+            const response = {
+                message: 'Login Successful.',
+                access_token,
+                user: userDataResponse
+            };
+
+
+
+            /* Setting the cookie for refresh token, for when access_token expires */
+            res.cookie('refreshtoken', refresh_token, refreshTokenCookieOptions);
+            /* Sending back the response with acces token and user's data */
+            res.json(response);
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
 
     },
 
@@ -141,7 +227,6 @@ const authController = {
 
 
     }
-
 
 
 }

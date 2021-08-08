@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const loginValidationRules = require('./auth/loginValidationRules');
 const registerValidationRules = require('./auth/registerValidationRules');
 
 
@@ -35,6 +36,7 @@ const getReqRoute = (req) => {
 }
 
 
+
 /**
  * Returns requested route's validation rules array.
  * @param req - Request object
@@ -52,6 +54,7 @@ const getReqRouteValidationRules = (req) => {
         throw new Error('Error reading validation rules.');
     }
 }
+
 
 
 /**
@@ -79,13 +82,23 @@ const validator = (validationRules) => {
 }
 
 
+
 /** Object containing different validator to call their validation rules. */
 const validateData = {
 
+
+    
     /* Register user validator */
-    register: validator(registerValidationRules)
+    register: validator(registerValidationRules),
+
+
+
+    /* Login user validator */
+    login: validator(loginValidationRules)
+
 
 };
+
 
 
 module.exports = validateData;
