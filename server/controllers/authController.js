@@ -155,7 +155,7 @@ const authController = {
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
             };
             const response = {
-                message: 'Login Successful.',
+                message: 'User Logged In.',
                 access_token,
                 user: userDataResponse
             };
@@ -179,6 +179,16 @@ const authController = {
 
     logout: (req, res) => {
 
+        try {
+
+            /* Clearing the refresh token cookie */
+            res.clearCookie('refresh_token', { path: '/api/auth/refresh_token' });
+            res.json({ msg: 'User Logged Out.' });
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
     },
 
 
