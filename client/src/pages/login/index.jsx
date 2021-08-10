@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 import { login } from "../../redux/actions/authAction";
 import './styles.css';
 
@@ -11,7 +11,15 @@ const Login = () => {
     const [userData, setuserData] = useState(initialState);
     const { usernameOrEmail, password } = userData;
     const [typePass, setTypePass] = useState(false);
+    
+    const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
+    const history = useHistory();
+
+
+    useEffect(() => {
+        if (auth.token) history.push('/');
+    }, [auth.token, history]);
 
 
     const handleInputChange = event => {
@@ -35,57 +43,61 @@ const Login = () => {
             wrongInputElement.remove();
     }
 
-    
+
     const showIncorrectUsernameOrEmail = message => {
         setuserData({ ...userData, password: '' });
         document.getElementById('login-username-email').focus();
-        const inputBlock = document.getElementsByClassName('username-email-group')[0];
+        const inputBlock = document.getElementsByClassName('username-email-block')[0];
         showWrongInputMessage(inputBlock, message);
     }
 
-    
+
     const showIncorrectPassword = message => {
         setuserData({ ...userData, password: '' });
         document.getElementById('login-password').focus();
-        const inputBlock = document.getElementsByClassName('password-group')[0];
+        const inputBlock = document.getElementsByClassName('password-block')[0];
         showWrongInputMessage(inputBlock, message);
+    }
+
+
+    const showDefaultError = () => {
+        const formBlock = document.getElementsByClassName('form-block')[0];
+        const message = 'Login request failed. Please try again after some time.'
+        showWrongInputMessage(formBlock, message);
     }
 
 
     const handleSubmit = async (event) => {
-
         event.preventDefault();
         removePreviousWrongInputMessages();
-
         try {
-
             await dispatch(login(userData));
-
         } catch (err) {
-
-            const param = err.response.data.param;
-            const message = err.response.data.msg;
-            if (param === 'password') {
-                showIncorrectPassword(message);
+            const status = err.request.status;
+            if (status === 400 || status === 401) {
+                const param = err.response.data.param;
+                const message = err.response.data.msg;
+                if (param === 'password') showIncorrectPassword(message);
+                else showIncorrectUsernameOrEmail(message);
             } else {
-                showIncorrectUsernameOrEmail(message);
+                showDefaultError();
             }
         }
     }
 
-    
+
     return (
         <div className="login-page">
-            <form onSubmit={handleSubmit}>
+            <form className="form-block" onSubmit={handleSubmit}>
                 <h3 className="text-uppercase text-center mb-4">Social Website</h3>
 
-                <div className="form-group username-email-group">
+                <div className="form-group username-email-block">
                     <label htmlFor="login-username-email">Username or Email</label>
                     <input id="login-username-email" className="form-control" type="text" placeholder="Enter username or email"
                         aria-describedby="emailHelp" name='usernameOrEmail' value={usernameOrEmail} onChange={handleInputChange} required autoFocus />
                 </div>
 
-                <div className="form-group password-group">
+                <div className="form-group password-block">
                     <label htmlFor="login-password">Password</label>
                     <div className="pass">
 
