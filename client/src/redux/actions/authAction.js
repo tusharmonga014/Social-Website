@@ -20,3 +20,19 @@ export const login = (data) => async (dispatch) => {
     }
 }
 
+export const refreshToken = () => async (dispatch) => {
+    try {
+
+        const res = await postDataAPI('auth/refresh_token', '', '');
+        dispatch({
+            type: 'AUTH', payload: {
+                user: res.data.user,
+                token: res.data.access_token
+            }
+        })
+
+    } catch (err) {
+        throw err;
+    }
+}
+
