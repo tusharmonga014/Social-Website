@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { login } from "../../redux/actions/authAction";
-import './styles.css';
+import { login } from "../redux/actions/authAction";
 
 
 const Login = () => {
@@ -10,8 +9,11 @@ const Login = () => {
     const initialState = { usernameOrEmail: '', password: '' };
     const [userData, setuserData] = useState(initialState);
     const { usernameOrEmail, password } = userData;
+
+
     const [typePass, setTypePass] = useState(false);
-    
+
+
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
     const history = useHistory();
@@ -28,90 +30,98 @@ const Login = () => {
     }
 
 
-    const showWrongInputMessage = (wrongInputBlock, message) => {
+    const passwordShowToggle = () => {
+        setTypePass(!typePass);
+        document.getElementsByClassName('password-show-toggle')[0].classList.toggle('fa-eye-slash');
+    }
+
+
+    const showWrongInputMessage = (refInputElement, position, message) => {
         const wrongInputElement = document.createElement("p");
         const wrongInputMessage = document.createTextNode(message);
         wrongInputElement.setAttribute('class', 'wrong-input');
         wrongInputElement.appendChild(wrongInputMessage);
-        wrongInputBlock.appendChild(wrongInputElement);
+        refInputElement.insertAdjacentElement(position, wrongInputElement);
     }
 
 
     const removePreviousWrongInputMessages = () => {
         const wrongInputElement = document.getElementsByClassName('wrong-input')[0];
-        if (wrongInputElement)
-            wrongInputElement.remove();
+        if (wrongInputElement) wrongInputElement.remove();
     }
 
 
     const showIncorrectUsernameOrEmail = message => {
         setuserData({ ...userData, password: '' });
-        document.getElementById('login-username-email').focus();
-        const inputBlock = document.getElementsByClassName('username-email-block')[0];
-        showWrongInputMessage(inputBlock, message);
+        document.getElementsByClassName('username-email-input')[0].focus();
+        const inputElement = document.getElementsByClassName('username-email-input')[0];
+        showWrongInputMessage(inputElement, 'afterend', message);
     }
 
 
     const showIncorrectPassword = message => {
         setuserData({ ...userData, password: '' });
-        document.getElementById('login-password').focus();
-        const inputBlock = document.getElementsByClassName('password-block')[0];
-        showWrongInputMessage(inputBlock, message);
+        document.getElementsByClassName('password-input')[0].focus();
+        const inputElement = document.getElementsByClassName('password-show-toggle')[0];
+        showWrongInputMessage(inputElement, 'afterend', message);
     }
 
 
     const showDefaultError = () => {
-        const formBlock = document.getElementsByClassName('form-block')[0];
+        const lastFormElement = document.getElementsByClassName('form-block')[0].lastChild;
         const message = 'Login request failed. Please try again after some time.'
-        showWrongInputMessage(formBlock, message);
+        showWrongInputMessage(lastFormElement, 'afterend', message);
     }
 
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        document.getElementById('login-button').setAttribute('disabled', 'true');
         removePreviousWrongInputMessages();
+
         try {
             await dispatch(login(userData));
         } catch (err) {
             const status = err.request.status;
-            if (status === 400 || status === 401) {
+            if (status === 400 || status === 401 || status === 404) {
                 const param = err.response.data.param;
                 const message = err.response.data.msg;
                 if (param === 'password') showIncorrectPassword(message);
                 else showIncorrectUsernameOrEmail(message);
             } else {
+                console.log(err);
                 showDefaultError();
             }
         }
+
+        document.getElementById('login-button').removeAttribute('disabled');
     }
 
 
     return (
-        <div className="login-page">
+        <div className="auth-page">
             <form className="form-block" onSubmit={handleSubmit}>
                 <h3 className="text-uppercase text-center mb-4">Social Website</h3>
 
-                <div className="form-group username-email-block">
-                    <label htmlFor="login-username-email">Username or Email</label>
-                    <input id="login-username-email" className="form-control" type="text" placeholder="Enter username or email"
+                <div className="form-group">
+                    <label htmlFor="username-email">Username or Email</label>
+                    <input id="username-email" className="form-control username-email-input" type="text" placeholder="Enter username or email"
                         aria-describedby="emailHelp" name='usernameOrEmail' value={usernameOrEmail} onChange={handleInputChange} required autoFocus />
                 </div>
 
-                <div className="form-group password-block">
-                    <label htmlFor="login-password">Password</label>
+                <div className="form-group">
+                    <label htmlFor="password">Password</label>
                     <div className="pass">
 
-                        <input id="login-password" className="form-control" type={typePass ? "text" : "password"} placeholder="Password"
+                        <input id="password" className="form-control password-input" type={typePass ? "text" : "password"} placeholder="Password"
                             name="password" value={password} onChange={handleInputChange} required />
 
-                        <small onClick={() => setTypePass(!typePass)}>
-                            {typePass ? 'Hide' : 'Show'}
-                        </small>
+                        <span className="fa fa-eye password-show-toggle" onClick={passwordShowToggle}></span>
                     </div>
 
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100">
+                <button type="submit" id='login-button' className="btn btn-primary w-100">
                     Login
                 </button>
 

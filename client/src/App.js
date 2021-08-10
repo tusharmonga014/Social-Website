@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Home from "./pages/home";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/actions/authAction";
 // import PageRender from "./PageRender";
+import './styles/global.css';
 
 function App() {
 
