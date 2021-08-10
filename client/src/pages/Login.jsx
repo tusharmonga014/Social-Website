@@ -92,9 +92,8 @@ const Login = () => {
                 console.log(err);
                 showDefaultError();
             }
+            document.getElementById('login-button').removeAttribute('disabled');
         }
-
-        document.getElementById('login-button').removeAttribute('disabled');
     }
 
 
