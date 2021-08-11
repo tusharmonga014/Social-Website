@@ -1,10 +1,10 @@
 import React from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 const Home = () => {
 
-    const { auth } = useSelector(state => state);
-    const { fullName, userImage } = auth.user;
+    // const { auth } = useSelector(state => state);
+    // const { fullName, userImage } = auth.user;
 
 
     return (

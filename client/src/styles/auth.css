@@ -29,9 +29,3 @@
     position: relative;
     z-index: 2;
 }
-
-.wrong-input {
-    color: red;
-    margin: 0 1%;
-    font-size: smaller;
-}

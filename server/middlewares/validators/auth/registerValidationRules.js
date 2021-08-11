@@ -2,12 +2,15 @@ const { body } = require('express-validator')
 
 module.exports = [
 
-  body('fullName').trim()
+  body('fullName').trim().replace(/ +(?= )/g, '')
     .notEmpty()
-    .withMessage('Full Name is required.')
+    .withMessage('Full name is required.')
     .bail()
-    .matches(/^[A-Za-z ]+$/)
-    .withMessage('Full Name can only have lowercase and uppercase alphabets.')
+    .matches(/^[a-zA-Z]/)
+    .withMessage('Full name can only start with an aplhabet.')
+    .bail()
+    .matches(/^[a-zA-Z][A-Za-z/./ ]+$/)
+    .withMessage('Full name can only have lowercase/uppercase alphabets and dot.')
     .bail()
     .isLength({ max: 25 })
     .withMessage('Full Name should not be more than 25 characters long.'),
