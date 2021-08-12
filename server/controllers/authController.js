@@ -182,7 +182,7 @@ const authController = {
         try {
 
             /* Clearing the refresh token cookie */
-            res.clearCookie('refresh_token', { path: '/api/auth/refresh_token' });
+            res.clearCookie('refreshtoken', { path: '/api/auth/refresh_token' });
             res.json({ msg: 'User Logged Out.' });
 
         } catch (err) {

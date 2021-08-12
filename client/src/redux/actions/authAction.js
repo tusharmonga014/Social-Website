@@ -1,14 +1,16 @@
 import { postDataAPI } from "../../utils/fetchData";
 import valid from "../../utils/validate/register";
 import { setAlert } from "./alertAction";
+import { TYPES } from "./TYPES";
 
 
 export const login = (data) => async (dispatch) => {
     try {
 
         const res = await postDataAPI('auth/login', data);
+        localStorage.setItem('isLoggedIn', true);
         dispatch({
-            type: 'AUTH', payload: {
+            type: TYPES.AUTH, payload: {
                 user: res.data.user,
                 token: res.data.access_token
             }
@@ -36,8 +38,9 @@ export const refreshToken = () => async (dispatch) => {
     try {
 
         const res = await postDataAPI('auth/refresh_token');
+        localStorage.setItem('isLoggedIn', true);
         dispatch({
-            type: 'AUTH', payload: {
+            type: TYPES.AUTH, payload: {
                 user: res.data.user,
                 token: res.data.access_token
             }
@@ -69,8 +72,9 @@ export const register = (data) => async (dispatch) => {
     try {
 
         const res = await postDataAPI('auth/register', newUserData);
+        localStorage.setItem('isLoggedIn', true);
         dispatch({
-            type: 'AUTH', payload: {
+            type: TYPES.AUTH, payload: {
                 user: res.data.user,
                 token: res.data.access_token
             }
@@ -92,6 +96,25 @@ export const register = (data) => async (dispatch) => {
             errRecieved.registerError = 'Register request failed. Pease try again.';
         }
         dispatch(setAlert(errRecieved));
+
+    }
+}
+
+
+export const logout = () => async (dispatch) => {
+    try {
+
+        await postDataAPI('auth/logout');
+        localStorage.setItem('isLoggedIn', false);
+        dispatch({
+            type: TYPES.AUTH,
+            payload: {}
+        })
+        window.location.href = "/";
+
+    } catch (err) {
+
+        console.error(err);
 
     }
 }

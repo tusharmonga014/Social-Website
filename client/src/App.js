@@ -1,12 +1,14 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Home from "./pages/home";
+import Login from "./pages/login";
+import Register from "./pages/register";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/actions/authAction";
-// import PageRender from "./PageRender";
+import PageRender from "./customRouter/PageRender";
 import './styles/global.css';
+import Header from "./components/header/Header";
+import PrivateRouter from "./customRouter/PrivateRouter";
 
 function App() {
 
@@ -23,10 +25,11 @@ function App() {
   return (
     <div className='app'>
       <Router>
+        {auth.token && <Header />}
         <Route exact path="/" component={auth.token ? Home : Login} />
         <Route exact path="/register" component={Register} />
-        {/* <Route exact path='/:page' component={PageRender} />
-        <Route exact path='/:page/:id' component={PageRender} /> */}
+        <PrivateRouter exact path='/:page' component={PageRender} />
+        <PrivateRouter exact path='/:page/:id' component={PageRender} />
       </Router>
     </div>
   );

@@ -1,9 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import NotFound from "./components/NotFound";
+import NotFound from "../components/NotFound";
+import Login from "../pages/login";
 
 const generatePage = (pageName) => {
-    const page = () => require(`./pages/${pageName}`).default;
+    const page = () => require(`../pages/${pageName}`).default;
 
     try {
         return React.createElement(page());
@@ -15,6 +17,7 @@ const generatePage = (pageName) => {
 const PageRender = () => {
     const { page, id } = useParams();
 
+    const { auth } = useSelector(state => state);
     let pageName = "";
 
     if (id) {
@@ -23,7 +26,8 @@ const PageRender = () => {
         pageName = `${page}`;
     }
 
-    return generatePage(pageName);
+    if (auth.token) return generatePage(pageName);
+    else return (<Login />);
 }
 
 export default PageRender;
