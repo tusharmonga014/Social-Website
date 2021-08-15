@@ -1,8 +1,9 @@
+import { useSelector } from "react-redux";
 import { Route, Redirect } from "react-router-dom"
 
 const PrivateRouter = (props) => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    return isLoggedIn ? <Route {...props} /> : <Redirect to="/" />
+    const { auth } = useSelector(state => state)
+    return auth.token ? <Route {...props} /> : <Redirect to="/" />
 }
 
 export default PrivateRouter;
