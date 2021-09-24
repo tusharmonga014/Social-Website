@@ -20,6 +20,9 @@
 /*--------- User Image ------- */
 
 @import url("./userimage.css");
+/* -------- Profile ----- */
+
+@import url("./profile.css");
 /* --------- Responsive ------ */
 
 @media (max-width: 766px) {

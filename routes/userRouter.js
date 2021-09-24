@@ -5,6 +5,10 @@ const userController = require('../controllers/userController');
 
 userRouter.get('/search', auth, userController.searchUser);
 
-userRouter.get('/user/:id', auth, userController.getUser);
+userRouter.get('/:id', auth, userController.getUser);
+
+userRouter.patch('/:id/follow', auth, userController.follow);
+
+userRouter.patch('/:id/unfollow', auth, userController.follow);
 
 module.exports = userRouter;

@@ -25,7 +25,7 @@ const Search = () => {
 
         try {
             setLoad(true);
-            const res = await getDataAPI(`users/search?username=${toSearch}`, auth.token);
+            const res = await getDataAPI(`user/search?username=${toSearch}`, auth.token);
             setUsers(res.data.users);
             setLoad(false);
         } catch (err) {

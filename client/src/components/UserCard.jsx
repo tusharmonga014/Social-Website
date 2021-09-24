@@ -2,11 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import UserImage from "./UserImage";
 
-const UserCard = ({ user, border, handleClose }) => {
+const UserCard = ({ user, border, handleClose, setShowFollowers, setShowFollowing, }) => {
 
 
     const handleCloseAll = () => {
         if (handleClose) handleClose();
+        if (setShowFollowers) setShowFollowers(false);
+        if (setShowFollowing) setShowFollowing(false);
     }
 
 

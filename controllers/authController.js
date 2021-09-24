@@ -110,7 +110,7 @@ const authController = {
 
 
                 /** User with same email as provided by the user. */
-                const existingUserEmail = await User.findOne({ email: usernameOrEmail }); // catch block, 500 error
+                const existingUserEmail = await User.findOne({ email: usernameOrEmail }).populate('followers following', 'username fullName userImage'); // catch block, 500 error
                 if (!existingUserEmail) return res.status(404).json({ param: 'usernameOrEmail', msg: 'Email is not registered.' });
                 else user = existingUserEmail;
 
@@ -119,7 +119,7 @@ const authController = {
 
 
                 /** User with same username as provided by the user. */
-                const existingUserUsername = await User.findOne({ username: usernameOrEmail }); // catch block, 500 error
+                const existingUserUsername = await User.findOne({ username: usernameOrEmail }).populate('followers following', 'username fullName userImage'); // catch block, 500 error
                 if (!existingUserUsername) return res.status(404).json({ param: 'usernameOrEmail', msg: 'Username is not registered.' });
                 else user = existingUserUsername;
 
@@ -211,7 +211,7 @@ const authController = {
 
 
                 /** User with same credentials as in refresh token of request. */
-                const user = await User.findOne({ _id: result._id }).select('-password');
+                const user = await User.findOne({ _id: result._id }).select('-password').populate('followers following', 'username fullName userImage'); // catch block, 500 error;
                 if (!user) return res.status(401).json({ msg: 'Please Login to Continue.' });
 
 

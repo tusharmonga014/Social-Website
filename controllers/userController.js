@@ -38,12 +38,61 @@ const userController = {
 
 
             /** User with same id as recieved in the request. */
-            const user = await User.findOne({ _id: idParam }).select('-password');
+            const user = await User.findById(idParam).select('-password').populate('followers following', 'username fullName userImage');
             if (!user) return res.status(404).json({ param: 'id', msg: 'No user found with this id.' });
 
 
             /* Sending back the user with matching id */
             res.json({ user });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    follow: async (req, res) => {
+
+        try {
+
+
+            const alreadyFollowing = await User.findOne({ _id: req.user._id, following: req.params.id });
+            if (!alreadyFollowing) {
+                await User.updateOne({ _id: req.user._id }, { $push: { following: req.params.id } });
+                await User.updateOne({ _id: req.params.id }, { $push: { followers: req.user._id } });
+            }
+
+
+            res.json({ msg: 'Successfully followed user.' });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    unfollow: async (req, res) => {
+
+        try {
+
+
+            const isFollowing = await User.findOne({ _id: req.user._id, following: req.params.id });
+            if (!isFollowing) return res.status(400).json({ msg: 'User not following, cannot unfollow' });
+
+
+            await User.updateOne({ _id: req.user._id }, { $pull: { following: req.params.id } });
+            await User.updateOne({ _id: req.params.id }, { $pull: { followers: req.user._id } });
+
+
+            res.json({ msg: 'Successfully Unfollowed user.' });
 
 
         } catch (err) {
