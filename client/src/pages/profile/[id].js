@@ -20,7 +20,7 @@ const Profile = () => {
         if (profile.ids.every(item => item !== id)) {
             dispatch(getProfileUsers({ id, auth }))
         }
-    }, [id, auth, dispatch, profile.ids])
+    }, [id, auth, dispatch, profile.ids]);
 
     return (
         
