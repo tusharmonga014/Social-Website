@@ -12,13 +12,13 @@ import { useParams } from 'react-router-dom';
 const Profile = () => {
 
     const { profile, auth } = useSelector(state => state)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const { id } = useParams();
 
     useEffect(() => {
         if (profile.ids.every(item => item !== id)) {
-            dispatch(getProfileUsers({ id, auth }))
+            dispatch(getProfileUsers({ id, auth }));
         }
     }, [id, auth, dispatch, profile.ids]);
 

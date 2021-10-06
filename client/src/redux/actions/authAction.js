@@ -14,7 +14,7 @@ export const login = (data) => async (dispatch) => {
                 user: res.data.user,
                 token: res.data.access_token
             }
-        })
+        });
 
     } catch (err) {
 
@@ -35,19 +35,25 @@ export const login = (data) => async (dispatch) => {
 
 
 export const refreshToken = () => async (dispatch) => {
-    try {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn) {
+        // dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: true} })
+        
+        try {
 
-        const res = await postDataAPI('auth/refresh_token');
-        localStorage.setItem('isLoggedIn', true);
-        dispatch({
-            type: TYPES.AUTH, payload: {
-                user: res.data.user,
-                token: res.data.access_token
-            }
-        })
+            const res = await postDataAPI('auth/refresh_token');
+            localStorage.setItem('isLoggedIn', true);
+            dispatch({
+                type: TYPES.AUTH, payload: {
+                    user: res.data.user,
+                    token: res.data.access_token
+                }
+            });
 
-    } catch (err) {
-        throw err;
+        } catch (err) {
+            throw err;
+        }
+
     }
 }
 

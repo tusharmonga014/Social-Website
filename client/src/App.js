@@ -23,15 +23,20 @@ function App() {
 
 
   return (
+
     <div className='app'>
       <Router>
+
         {auth.token && <Header />}
-        <Route exact path="/" component={auth.token ? Home : Login} />
+        {auth.token && <Route exact path="/" component={Home} />}
+        {!auth.token && <Route exact path="/" component={Login} />}
         <Route exact path="/register" component={Register} />
         <PrivateRouter exact path='/:page' component={PageRender} />
         <PrivateRouter exact path='/:page/:id' component={PageRender} />
+
       </Router>
     </div>
+
   );
 }
 

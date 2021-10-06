@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import UserImage from '../UserImage';
-// import EditProfile from './EditProfile';
-import FollowBtn from '../FollowBtn';
-import Followers from './Followers';
-import Following from './Following';
+import React, { useState, useEffect } from "react";
+import UserImage from "../UserImage";
+// import EditProfile from "./EditProfile";
+import FollowBtn from "../FollowBtn";
+import Followers from "./Followers";
+import Following from "./Following";
 
 const Info = ({ id, auth, profile, dispatch }) => {
 
