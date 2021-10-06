@@ -9,21 +9,13 @@ const PrivateRouter = (props) => {
 
     if (isLoggedIn === 'true') {
 
-        if (auth.token){
-            console.log("token present");
-            console.log(isLoggedIn + " " + auth.token);
+        if (auth.token)
             return <Route {...props} />
-        }
-        else{
-            console.log("token not present");
-            console.log(isLoggedIn + " " + auth.token);
+        else
             return <Loading />
-        }
+
     } else {
-
-        console.log(isLoggedIn);
         return <Redirect to="/" />
-
     }
 }
 
