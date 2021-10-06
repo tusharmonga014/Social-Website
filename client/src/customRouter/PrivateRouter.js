@@ -16,6 +16,7 @@ const PrivateRouter = (props) => {
 
     } else {
 
+        console.log(isLoggedIn);
         return <Redirect to="/" />
 
     }

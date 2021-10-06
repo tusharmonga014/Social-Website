@@ -42,7 +42,6 @@ export const refreshToken = () => async (dispatch) => {
         try {
 
             const res = await postDataAPI('auth/refresh_token');
-            localStorage.setItem('isLoggedIn', true);
             dispatch({
                 type: TYPES.AUTH, payload: {
                     user: res.data.user,
