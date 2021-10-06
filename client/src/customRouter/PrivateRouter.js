@@ -15,7 +15,9 @@ const PrivateRouter = (props) => {
             return <Loading />
 
     } else {
+
         return <Redirect to="/" />
+        
     }
 }
 
