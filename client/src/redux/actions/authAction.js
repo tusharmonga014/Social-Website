@@ -8,7 +8,7 @@ export const login = (data) => async (dispatch) => {
     try {
 
         const res = await postDataAPI('auth/login', data);
-        localStorage.setItem('isLoggedIn', true);
+        localStorage.setItem('isLoggedIn', 'true');
         dispatch({
             type: TYPES.AUTH, payload: {
                 user: res.data.user,
@@ -35,10 +35,10 @@ export const login = (data) => async (dispatch) => {
 
 
 export const refreshToken = () => async (dispatch) => {
+    
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn) {
-        // dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: true} })
-        
+    if (isLoggedIn === 'true') {
+
         try {
 
             const res = await postDataAPI('auth/refresh_token');
@@ -78,7 +78,7 @@ export const register = (data) => async (dispatch) => {
     try {
 
         const res = await postDataAPI('auth/register', newUserData);
-        localStorage.setItem('isLoggedIn', true);
+        localStorage.setItem('isLoggedIn', 'true');
         dispatch({
             type: TYPES.AUTH, payload: {
                 user: res.data.user,
@@ -108,10 +108,11 @@ export const register = (data) => async (dispatch) => {
 
 
 export const logout = () => async (dispatch) => {
+    
+    localStorage.setItem('isLoggedIn', 'false');
     try {
 
         await postDataAPI('auth/logout');
-        localStorage.setItem('isLoggedIn', false);
         dispatch({
             type: TYPES.AUTH,
             payload: {}
@@ -121,6 +122,5 @@ export const logout = () => async (dispatch) => {
     } catch (err) {
 
         console.error(err);
-
     }
 }
