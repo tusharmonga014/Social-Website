@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const loginValidationRules = require('./auth/loginValidationRules');
 const registerValidationRules = require('./auth/registerValidationRules');
+const newPostValidationRules = require('./post/newPostValidationRules');
 
 
 /**
@@ -86,15 +87,17 @@ const validator = (validationRules) => {
 /** Object containing different validator to call their validation rules. */
 const validateData = {
 
-
     
     /* Register user validator */
     register: validator(registerValidationRules),
 
 
-
     /* Login user validator */
-    login: validator(loginValidationRules)
+    login: validator(loginValidationRules),
+    
+
+    /* Post creation validator */
+    createPost: validator(newPostValidationRules)
 
 
 };

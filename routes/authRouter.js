@@ -1,7 +1,7 @@
 const express = require('express');
 const authRouter = express.Router();
-const authController = require('../controllers/authController');
 const validateData = require('../middlewares/validators');
+const authController = require('../controllers/authController');
 
 authRouter.post('/register', validateData.register, authController.register);
 
