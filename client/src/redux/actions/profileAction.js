@@ -2,6 +2,7 @@ import { getDataAPI, patchDataAPI } from "../../utils/fetchData";
 import { TYPES, DeleteData } from "./TYPES";
 
 export const PROFILE_TYPES = {
+
     LOADING: "LOADING_PROFILE",
     GET_USER: "GET_PROFILE_USER",
     FOLLOW: "FOLLOW",
@@ -9,6 +10,7 @@ export const PROFILE_TYPES = {
     GET_ID: "GET_PROFILE_ID",
     GET_POSTS: "GET_PROFILE_POSTS",
     UPDATE_POST: "UPDATE_PROFILE_POST"
+
 }
 
 
@@ -37,9 +39,9 @@ export const getProfileUsers = ({ id, auth }) => async (dispatch) => {
             payload: { ...posts.data, _id: id, page: 2 }
         });
 
-        dispatch({ 
-            type: PROFILE_TYPES.LOADING, 
-            payload: false 
+        dispatch({
+            type: PROFILE_TYPES.LOADING,
+            payload: false
         });
 
     } catch (err) {
@@ -69,10 +71,10 @@ export const follow = ({ users, user, auth, socket }) => async (dispatch) => {
         });
     }
 
-    dispatch({ 
-        type: PROFILE_TYPES.FOLLOW, 
+    dispatch({
+        type: PROFILE_TYPES.FOLLOW,
         payload: newUser
-     });
+    });
 
     dispatch({
         type: TYPES.AUTH,
@@ -84,7 +86,9 @@ export const follow = ({ users, user, auth, socket }) => async (dispatch) => {
 
 
     try {
-        const res = await patchDataAPI(`user/${user._id}/follow`, null, auth.token)
+
+        // const res = await patchDataAPI(`user/${user._id}/follow`, null, auth.token)
+        await patchDataAPI(`user/${user._id}/follow`, null, auth.token)
         // socket.emit("follow", res.data.newUser)
 
         // Notify
@@ -120,9 +124,9 @@ export const unfollow = ({ users, user, auth, socket }) => async (dispatch) => {
         });
     }
 
-    dispatch({ 
-        type: PROFILE_TYPES.UNFOLLOW, 
-        payload: newUser 
+    dispatch({
+        type: PROFILE_TYPES.UNFOLLOW,
+        payload: newUser
     });
 
     dispatch({
@@ -139,7 +143,8 @@ export const unfollow = ({ users, user, auth, socket }) => async (dispatch) => {
 
     try {
 
-        const res = await patchDataAPI(`user/${user._id}/unfollow`, null, auth.token)
+        // const res = await patchDataAPI(`user/${user._id}/unfollow`, null, auth.token)
+        await patchDataAPI(`user/${user._id}/unfollow`, null, auth.token)
         // socket.emit("unFollow", res.data.newUser)
 
     } catch (err) {

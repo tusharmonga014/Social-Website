@@ -1,0 +1,221 @@
+/* --------- Status ---------- */
+
+.new-post {
+    background: white;
+    box-shadow: 0 0 5px #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0, .125);
+}
+
+.new-post .new-post-btn {
+    background: #f1f1f1;
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    color: #555;
+    padding: 0 10px;
+    text-align: left;
+    margin: 0 5px;
+}
+
+.new-post .new-post-btn:hover {
+    background: #ddd;
+}
+
+/* ------- New Post Modal ------- */
+
+.new-post-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #0008;
+    z-index: 4;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+}
+
+.new-post-modal form {
+    max-width: 450px;
+    width: 100%;
+    background: white;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.new-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    transform: translateY(-13px);
+}
+
+.new-post-header .close-button {
+    font-size: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transform: translateY(-5px);
+}
+
+.new-post-body textarea {
+    width: 100%;
+    min-height: 150px;
+    border: none;
+    outline: none;
+    resize: none;
+}
+
+.new-post-body .input-images {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.new-post-body .input-images i {
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.new-post-body .input-images .file_upload {
+    overflow: hidden;
+    margin: 0 10px;
+    position: relative;
+}
+
+.new-post-body .input-images .file_upload #file {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.new-post-body .show-images {
+    max-height: 270px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    place-items: center;
+    padding: 10px 0;
+    grid-gap: 10px;
+}
+
+.new-post-body .show-images #file_img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.new-post-body .show-images #file_img img, .new-post-body .show-images #file_img video {
+    display: block;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    max-height: 100px;
+}
+
+.new-post-body .show-images #file_img span {
+    position: absolute;
+    top: -1px;
+    right: -2px;
+    z-index: 4;
+    background: white;
+    color: crimson;
+    padding: 3px 7px;
+    border: 1px solid crimson;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.new-post-body .stream span {
+    position: absolute;
+    top: -10px;
+    right: 5px;
+    color: crimson;
+    font-size: 2rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.new-post-body .dropdown-menu {
+    transform: translate3d(-153px, -190px, 0px) !important;
+}
+
+.new-post-footer {
+    text-align: center;
+}
+
+.new-post-footer .btn {
+    background-color: rgb(28, 25, 25);
+}
+
+/* ------------Posts ------ */
+
+.posts .card {
+    box-shadow: 0 0 4px #ddd;
+}
+
+/* --------- Post Card Header --------- */
+
+.posts .card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 15px 25px;
+}
+
+.posts .card_header .card_name {
+    transform: translateY(3px);
+}
+
+.posts .card_header .dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: inherit;
+}
+
+.posts .card_header .dropdown-item {
+    display: flex;
+    margin: 5px 0;
+}
+
+/* ---------- Post Card Body ---------- */
+
+.posts .card_body-content {
+    padding: 0 25px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.posts .card_body-content .readMore {
+    color: crimson;
+    cursor: pointer;
+}
+
+/* ---------- Post Card Footer ---------- */
+
+.posts .card_icon_menu {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.posts .card_icon_menu i {
+    font-size: 28px;
+    margin: 10px;
+}
+
+.posts .card_icon_menu img {
+    width: 28px;
+    height: 28px;
+    transform: translate(5px, -5px);
+    opacity: 0.9;
+}

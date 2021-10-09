@@ -9,11 +9,12 @@ import PageRender from "./customRouter/PageRender";
 import './styles/global.css';
 import Header from "./components/header/Header";
 import PrivateRouter from "./customRouter/PrivateRouter";
+import NewPostModal from "./components/home/NewPost/NewPostModal";
 
 function App() {
 
 
-  const { auth } = useSelector(state => state);
+  const { auth, post } = useSelector(state => state);
   const dispatch = useDispatch();
 
 
@@ -28,6 +29,7 @@ function App() {
       <Router>
 
         {auth.token && <Header />}
+        {post.newPostModal && <NewPostModal />}
         {auth.token && <Route exact path="/" component={Home} />}
         {!auth.token && <Route exact path="/" component={Login} />}
         <Route exact path="/register" component={Register} />
