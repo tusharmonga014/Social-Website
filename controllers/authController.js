@@ -62,7 +62,7 @@ const authController = {
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
             };
             const response = {
-                message: 'User registered.',
+                msg: 'User registered.',
                 access_token,
                 user: userDataResponse
             };
@@ -155,7 +155,7 @@ const authController = {
                 maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
             };
             const response = {
-                message: 'User Logged In.',
+                msg: 'User Logged In.',
                 access_token,
                 user: userDataResponse
             };
