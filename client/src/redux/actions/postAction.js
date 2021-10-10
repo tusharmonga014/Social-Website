@@ -22,6 +22,7 @@ export const createPost = (content, images, auth) => async (dispatch) => {
 
     } catch (err) {
 
+        console.log(err);
         dispatch(setAlert({ newPostError: 'Post update failed, please try again.' }));
     }
 

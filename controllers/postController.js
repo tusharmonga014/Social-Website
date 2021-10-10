@@ -27,7 +27,7 @@ const postController = {
 
                     /** Date and Time for upload record and publicID of post file. */
                     const dateTime = getDateTimeForUpload();
-                    
+
                     /** Cloudinary common post public_id for storing post file along with upload date and time for file name. */
                     const cloudinaryPublicId_CommonPostId = 'posts/' + userId + '_' + dateTime;
 
@@ -83,6 +83,7 @@ const postController = {
 
         } catch (err) {
 
+            console.log(err);
             return res.status(500).json({ msg: err.message });
         }
 
