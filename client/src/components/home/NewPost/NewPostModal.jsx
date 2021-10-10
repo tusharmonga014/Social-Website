@@ -1,10 +1,11 @@
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { POST_TYPES } from "../../../redux/actions/postAction";
+import { createPost, POST_TYPES } from "../../../redux/actions/postAction";
 import Icons from "../../Icons";
 import ImageThumbnail from "../../ImageThumbnail";
 import VideoThumbnail from "../../VideoThumbnail";
 import { setAlert } from "../../../redux/actions/alertAction";
+import dataURLtoFile from "../../../utils/fileConverterUtility/base64toFile";
 
 
 const NewPostModal = () => {
@@ -46,27 +47,35 @@ const NewPostModal = () => {
     }
 
 
-    const handleChangeImages = event => {
-        dispatch(setAlert({ newPostError: '' }));
+    const checkImageVideoFileLength = (addedLength) => {
+        if (images.length + addedLength > maxImages)
+            return false;
+        return true;
+    }
 
-        const files = [...event.target.files];
-        const newImages = [];
 
-        let err = '';
-        if (images.length === 10 || images.length + files.length > maxImages)
-            err = 'Cannot add more than 10 photos/videos.';
-        else files.forEach(file => {
+    const validateImageVideoFiles = (files) => {
+        let err;
+        if (!checkImageVideoFileLength(files.length))
+            return 'Cannot add more than 10 photos/videos.';
+        files.forEach(file => {
             if (!file)
                 return err = "File does not exist.";
             if (file.size > maxFileSize)
                 return err = `${file.name} is larger than 5mb.`;
             if (file.type !== 'image/jpeg' && file.type !== 'video/mp4' && file.type !== 'image/png')
                 return err = `${file.name} is not in correct format.`;
-            return newImages.push(file);
         });
+        return err;
+    }
 
+
+    const handleChangeImages = event => {
+        dispatch(setAlert({ newPostError: '' }));
+        const files = [...event.target.files];
+        const err = validateImageVideoFiles(files);
         if (err) dispatch(setAlert({ newPostError: err }));
-        else setImages([...images, ...newImages]);
+        else setImages([...images, ...files]);
     }
 
 
@@ -94,14 +103,26 @@ const NewPostModal = () => {
 
 
     const handleCapture = () => {
+        dispatch(setAlert({ newPostError: '' }));
+
+        if (!checkImageVideoFileLength(1)) {
+            dispatch(setAlert({ newPostError: 'Cannot add more than 10 photos/videos.' }));
+            return;
+        }
+
         const width = videoRef.current.clientWidth;
         const height = videoRef.current.clientHeight;
+
         refCanvas.current.setAttribute("width", width);
         refCanvas.current.setAttribute("height", height);
+
         const ctx = refCanvas.current.getContext("2d");
         ctx.drawImage(videoRef.current, 0, 0, width, height);
+
         const URL = refCanvas.current.toDataURL();
-        setImages([...images, { camera: URL }]);
+        const newImageFile = dataURLtoFile(URL, 'captured_image');
+
+        setImages([...images, newImageFile]);
     }
 
 
@@ -118,6 +139,7 @@ const NewPostModal = () => {
         // if (post.onEdit) {
         // dispatch(updatePost({ content, images, auth, status }))
         // } else {
+        dispatch(createPost(content, images, auth));
         // dispatch(createPost({ content, images, auth, socket }))
         // }
         setContent("");
@@ -170,9 +192,9 @@ const NewPostModal = () => {
                     <div className="show-images">
                         {
                             images.map((img, index) => (
-                                <div key={index} id="file_img">
+                                <div key={index} id="file-img">
                                     {
-                                        img.camera ? <ImageThumbnail src={img.camera} alt="image" />
+                                        img.camera ? <ImageThumbnail src={img.camera} alt="imgThumbnail" />
                                             : img.url
                                                 ? <>
                                                     {
@@ -208,7 +230,7 @@ const NewPostModal = () => {
                                 ? <i className="fas fa-camera" onClick={handleCapture} />
                                 : <>
                                     <i className="fas fa-camera" onClick={handleStream} />
-                                    <div className="file_upload">
+                                    <div className="file-upload">
                                         <i className="fas fa-image" />
                                         <input type="file" name="file" id="file" multiple
                                             accept="image/*,video/*" onChange={handleChangeImages} />

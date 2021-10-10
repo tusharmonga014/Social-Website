@@ -79,13 +79,13 @@
     cursor: pointer;
 }
 
-.new-post-body .input-images .file_upload {
+.new-post-body .input-images .file-upload {
     overflow: hidden;
     margin: 0 10px;
     position: relative;
 }
 
-.new-post-body .input-images .file_upload #file {
+.new-post-body .input-images .file-upload #file {
     position: absolute;
     top: 0;
     left: 0;
@@ -104,13 +104,13 @@
     grid-gap: 10px;
 }
 
-.new-post-body .show-images #file_img {
+.new-post-body .show-images #file-img {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-.new-post-body .show-images #file_img img, .new-post-body .show-images #file_img video {
+.new-post-body .show-images #file-img img, .new-post-body .show-images #file-img video {
     display: block;
     object-fit: contain;
     width: 100%;
@@ -118,15 +118,15 @@
     max-height: 100px;
 }
 
-.new-post-body .show-images #file_img span {
+.new-post-body .show-images #file-img span {
     position: absolute;
     top: -1px;
     right: -2px;
     z-index: 4;
-    background: white;
-    color: crimson;
+    background: gainsboro;
+    color: black;
     padding: 3px 7px;
-    border: 1px solid crimson;
+    border: 1px solid black;
     border-radius: 50%;
     font-size: 10px;
     font-weight: bolder;
