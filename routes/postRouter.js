@@ -6,4 +6,6 @@ const postController = require('../controllers/postController');
 
 postRouter.post('/create-post', auth, validateData.createPost, postController.createPost);
 
+postRouter.get('/feed-posts', auth, postController.getPosts);
+
 module.exports = postRouter;
