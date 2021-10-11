@@ -12,7 +12,7 @@ const Icons = ({ setContent, content }) => {
 
     return (
 
-        <div className="nav-item dropdown">
+        <div className="nav-item dropdown emoji-icons">
 
             <span className="nav-link position-relative px-1" id="navbarDropdown"
                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -151,7 +151,17 @@
     text-align: center;
 }
 
-.new-post-footer .btn {
+.new-post-footer .post-uploaded {
+    justify-content: space-between;
+    font-size: medium;
+}
+
+.new-post-footer .post-uploading {
+    justify-content: space-between;
+    font-size: medium;
+}
+
+.new-post-footer .post-button {
     background-color: rgb(28, 25, 25);
 }
 

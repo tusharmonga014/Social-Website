@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createPost, POST_TYPES } from "../../../redux/actions/postAction";
 import Icons from "../../Icons";
@@ -10,17 +10,17 @@ import dataURLtoFile from "../../../utils/fileConverterUtility/base64toFile";
 
 const NewPostModal = () => {
 
-    const { auth, alert } = useSelector(state => state);
+    const { auth, alert, post } = useSelector(state => state);
     const dispatch = useDispatch();
 
 
     const maxImages = 10;  // 10 images
-    const maxContetLength = 500; // 500 characters
+    const maxContentLength = 500; // 500 characters
     const maxFileSize = 1024 * 1024 * 5;   // 5 mb
 
 
     const [content, setContent] = useState('');
-    const [remainingContentLength, setRemainingContentLength] = useState(maxContetLength);
+    const [remainingContentLength, setRemainingContentLength] = useState(maxContentLength);
     const [images, setImages] = useState([]);
 
 
@@ -31,7 +31,7 @@ const NewPostModal = () => {
 
 
     const handleChangeContent = newContent => {
-        const newRemainingContentLength = maxContetLength - newContent.length;
+        const newRemainingContentLength = maxContentLength - newContent.length;
         const contentLengthElement = document.querySelector('.new-post-header .content-length');
         setRemainingContentLength(newRemainingContentLength);
         setContent(newContent);
@@ -134,7 +134,8 @@ const NewPostModal = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        if (content.length === 0 && images.length === 0)
+        dispatch(setAlert({ newPostError: '' }));
+        if (!content && !images.length)
             return dispatch(setAlert({ newPostError: 'Post cannot be empty.' }));
         // if (post.onEdit) {
         // dispatch(updatePost({ content, images, auth, status }))
@@ -142,10 +143,7 @@ const NewPostModal = () => {
         dispatch(createPost(content, images, auth));
         // dispatch(createPost({ content, images, auth, socket }))
         // }
-        setContent("");
-        setImages([]);
         if (tracks) tracks.stop();
-        closeNewPostModal();
     }
 
 
@@ -156,6 +154,49 @@ const NewPostModal = () => {
         });
         dispatch(setAlert({ newPostError: '' }));
     }
+
+
+
+    useEffect(() => {
+
+        const postUploadButton = document.getElementsByClassName('post-button')[0];
+        if (postUploadButton) {
+            const disablePostButton = () => {
+                if (!content && !images.length) return true;
+                if (content.length > maxContentLength) return true;
+                if (!content.replace(/\s/g, "").length && !images.length) return true;
+                return false;
+            }
+            if (disablePostButton()) postUploadButton.setAttribute('disabled', true);
+            else postUploadButton.removeAttribute('disabled');
+        }
+
+    }, [content, images]);
+
+
+    useEffect(() => {
+
+        const textArea = document.querySelector('.new-post-body textarea');
+        const textAreaEmojiIcon = document.querySelector('.new-post-body .emoji-icons');
+        const imageFilesCloseButton = document.querySelectorAll('.new-post-body .show-images span');
+        const cameraUploadButton = document.querySelector('.new-post-body .input-images i');
+        const fileUploadButton = document.querySelector('.new-post-body .input-images .file-upload');
+
+        if (post.postUploaded || post.postUploading) {
+            textArea.setAttribute('disabled', true);
+            if (textAreaEmojiIcon) textAreaEmojiIcon.setAttribute('hidden', true);
+            if (fileUploadButton) fileUploadButton.setAttribute('hidden', true);
+            if (cameraUploadButton) cameraUploadButton.setAttribute('hidden', true);
+            if (imageFilesCloseButton) imageFilesCloseButton.forEach(closeButton => closeButton.setAttribute('hidden', true));
+        } else {
+            textArea.removeAttribute('disabled');
+            if (textAreaEmojiIcon) textAreaEmojiIcon.removeAttribute('hidden');
+            if (fileUploadButton) fileUploadButton.removeAttribute('hidden');
+            if (cameraUploadButton) cameraUploadButton.removeAttribute('hidden');
+            if (imageFilesCloseButton) imageFilesCloseButton.forEach(closeButton => closeButton.removeAttribute('hidden'));
+        }
+
+    }, [post.postUploaded, post.postUploading]);
 
 
     // useEffect(() => {
@@ -182,7 +223,7 @@ const NewPostModal = () => {
 
 
                 <div className="new-post-body">
-                    <textarea name="content" value={content} spellCheck="false"
+                    <textarea name="content" value={content} spellCheck="false" autoFocus
                         placeholder={`${auth.user.username}, what are you thinking?`}
                         onChange={event => handleChangeContent(event.target.value)} />
                     <div className="d-flex">
@@ -242,12 +283,32 @@ const NewPostModal = () => {
 
 
                 <div className="new-post-footer">
-                    <small className="form-text text-danger mb-2">
-                        {alert.newPostError ? alert.newPostError : ""}
-                    </small>
-                    <button className="btn btn-secondary w-100" type="submit">
-                        Post
-                    </button>
+
+                    {post.postUploaded
+                        ?
+                        <div className="post-uploaded btn btn-primary btn-lg w-100 text-white">
+                            Post Uploaded &nbsp; &nbsp;<i className="fas fa-check-circle"></i>
+                        </div>
+                        :
+                        <>
+                            {post.postUploading
+                                ?
+                                <div className="post-uploading btn btn-secondary w-100 text-white">
+                                    Posting &nbsp; &nbsp;<i className="fas fa-spinner fa-pulse"></i>
+                                </div>
+                                :
+                                <>
+                                    <small className="form-text text-danger mb-2">
+                                        {alert.newPostError ? alert.newPostError : ""}
+                                    </small>
+                                    <button className="post-button btn btn-secondary w-100" type="submit">
+                                        Post
+                                    </button>
+                                </>
+                            }
+                        </>
+                    }
+
                 </div>
 
 
