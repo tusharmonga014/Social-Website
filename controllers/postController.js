@@ -1,5 +1,5 @@
 const Post = require("../models/postModel");
-const cloudinaryFileUpload = require('../utils/cloudinaryFileUpload');
+const cloudinaryUploadMediaFile = require("../utils/cloudinaryFileUpload");
 const getDateTimeForUpload = require("../utils/getDateTimeForUpload");
 
 const postController = {
@@ -14,48 +14,20 @@ const postController = {
             /* Post content recieved in request. */
             const { content } = req.body;
 
+            /** Post image and video files array for storing cloudinary public_id and url. */
+            const images = [];
+
 
             /** Files recieved in request. */
             const files = req.files;
             if (files) {
 
-
                 /** Post images and video files in request. */
-                const images = files.images;
-                if (images) {
+                const imageFiles = files.images;
+                if (imageFiles) {
 
-
-                    /** Date and Time for upload record and publicID of post file. */
-                    const dateTime = getDateTimeForUpload();
-
-                    /** Cloudinary common post public_id for storing post file along with upload date and time for file name. */
-                    const cloudinaryPublicId_CommonPostId = 'posts/' + userId + '_' + dateTime;
-
-
-                    if (images.length > 1) {
-
-                        for (let fileCounter = 0; fileCounter < images.length; fileCounter++) {
-                            const file = images[fileCounter];
-                            const fileBuffer = file.data;
-                            const fileType = file.mimetype.substring(0, 5) === 'image' ? 'image' : 'video';
-                            const cloudinaryPublicId = cloudinaryPublicId_CommonPostId + '_' + fileCounter;
-                            const result = await cloudinaryFileUpload(fileBuffer, fileType, cloudinaryPublicId);
-                            console.log(result); // WORK TO BE DONE
-                        }
-
-                    } else if (images) {
-
-                        const file = images;
-                        const fileBuffer = file.data;
-                        const fileType = file.mimetype.substring(0, 5) === 'image' ? 'image' : 'video';
-                        const cloudinaryPublicId = cloudinaryPublicId_CommonPostId + '_' + '0';
-                        const result = await cloudinaryFileUpload(fileBuffer, fileType, cloudinaryPublicId);
-                        console.log(result); // WORK TO BE DONE
-
-                    }
-
+                    await uploadPostImagesToCloudinary(userId, imageFiles, images);
                 }
-
             }
 
 
@@ -64,13 +36,13 @@ const postController = {
                 {
                     user: userId,
                     content,
-                    // images
+                    images
                 }
             );
 
 
             /* Saving the new post. */
-            // await newPost.save();
+            await newPost.save();
 
 
             res.json({
@@ -89,6 +61,39 @@ const postController = {
     }
 }
 
+
+/**
+ * Uploads post images to cloudinary and stores their publicID and url.
+ * @param {String} userId UserId of user who is uploading the post.
+ * @param {*} files Image/Video files in the post to be uploaded.
+ * @param {*} images Images array to be saved in datbase.
+ */
+const uploadPostImagesToCloudinary = async (userId, files, images) => {
+
+    /** Date and Time for upload record and publicID of post file. */
+    const dateTime = getDateTimeForUpload();
+
+    /** Cloudinary common post public_id for storing post file along with upload date and time for file name. */
+    const cloudinaryPublicId_CommonPostId = 'posts/' + userId + '_' + dateTime;
+
+    if (files.length > 1) {
+        for (let fileCounter = 0; fileCounter < files.length; fileCounter++) {
+            const file = files[fileCounter];
+            const cloudinaryPublicId = cloudinaryPublicId_CommonPostId + '_' + fileCounter;
+            const response = await cloudinaryUploadMediaFile(file, cloudinaryPublicId);
+            const response_publicId = response.public_id;
+            const response_url = response.secure_url;
+            images.push({ public_id: response_publicId, url: response_url });
+        }
+    } else if (files) {
+        const file = files;
+        const cloudinaryPublicId = cloudinaryPublicId_CommonPostId + '_' + '0';
+        const response = await cloudinaryUploadMediaFile(file, cloudinaryPublicId);
+        const response_publicId = response.public_id;
+        const response_url = response.secure_url;
+        images.push({ public_id: response_publicId, url: response_url });
+    }
+}
 
 
 module.exports = postController;

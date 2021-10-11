@@ -28,8 +28,25 @@ const stream = (resolve, reject, fileType, cloudinaryPublicId) => cloudinary.upl
  * @param {String} cloudinaryPublicId public_id to be set for the file in cloudinary. 
  * @returns The result object after uploading the file.
  */
-module.exports = (fileBuffer, fileType, cloudinaryPublicId) => {
+const cloudinaryFileUpload = (fileBuffer, fileType, cloudinaryPublicId) => {
     return new Promise((resolve, reject) => {
         streamifier.createReadStream(fileBuffer).pipe(stream(resolve, reject, fileType, cloudinaryPublicId));
     });
 };
+
+
+/**
+ * Converts media file to buffer array, uploads it to cloudinary and returns the response.
+ * @param {*} file File to be uploaded.
+ * @param {String} cloudinaryPublicId public_id to be set for the file in cloudinary.
+ * @returns Response from cloudinary.
+ */
+const cloudinaryUploadMediaFile = async (file, cloudinaryPublicId) => {
+    const fileBuffer = file.data;
+    const fileType = file.mimetype.substring(0, 5) === 'image' ? 'image' : 'video';
+    const response = await cloudinaryFileUpload(fileBuffer, fileType, cloudinaryPublicId);
+    return response;
+}
+
+
+module.exports = cloudinaryUploadMediaFile;
