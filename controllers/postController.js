@@ -11,6 +11,11 @@ const postController = {
             /** Id of user who created the post. */
             const userId = req.user._id;
 
+            /** New post created by user. */
+            const newPost = new Post({});
+            /** _id of new post. */
+            const newPostId = newPost._id;
+
             /* Post content recieved in request. */
             const { content } = req.body;
 
@@ -26,19 +31,15 @@ const postController = {
                 const imageFiles = files.images;
                 if (imageFiles) {
 
-                    await uploadPostImagesToCloudinary(userId, imageFiles, images);
+                    await uploadPostImagesToCloudinary(newPostId, imageFiles, images);
                 }
             }
 
 
-            /** New post created by user. */
-            const newPost = new Post(
-                {
-                    user: userId,
-                    content,
-                    images
-                }
-            );
+            /* Setting new post items. */
+            newPost.user = userId;
+            newPost.content = content;
+            newPost.images = images;
 
 
             /* Saving the new post. */
@@ -113,7 +114,7 @@ const postController = {
 
 /**
  * Uploads post images to cloudinary and stores their publicID and url.
- * @param {String} userId UserId of user who is uploading the post.
+ * @param {String} postId _id of new post.
  * @param {*} files Image/Video files in the post to be uploaded.
  * @param {*} images Images array to be saved in database.
  */
