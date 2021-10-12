@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import HomePosts from "../components/home/HomePosts";
 import NewPost from "../components/home/NewPost/NewPost";
+import RightSideBar from "../components/home/RightSideBar";
 
 let scroll = 0;
 
@@ -36,6 +37,10 @@ const Home = () => {
                         ? <h2 className="text-center text-muted mt-4">Follow people to see their posts.</h2>
                         : <HomePosts />
                 }
+            </div>
+
+            <div className="col-md-4">
+                <RightSideBar />
             </div>
 
         </div >

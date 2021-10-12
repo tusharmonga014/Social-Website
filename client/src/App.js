@@ -11,6 +11,7 @@ import Header from "./components/header/Header";
 import PrivateRouter from "./customRouter/PrivateRouter";
 import NewPostModal from "./components/home/NewPost/NewPostModal";
 import { getPosts } from "./redux/actions/postAction";
+import { getSuggestions } from "./redux/actions/suggestionsAction";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
   useEffect(() => {
     if (auth.token) {
       dispatch(getPosts(auth, 1));
+      dispatch(getSuggestions(auth, 7));
     }
   }, [auth, auth.token, dispatch]);
 

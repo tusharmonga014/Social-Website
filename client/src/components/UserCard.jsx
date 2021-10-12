@@ -2,8 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import UserImage from "./UserImage";
 
-const UserCard = ({ user, border, handleClose, setShowFollowers, setShowFollowing, }) => {
-
+const UserCard = ({ children, user, border, handleClose, setShowFollowers, setShowFollowing, }) => {
 
     const handleCloseAll = () => {
         if (handleClose) handleClose();
@@ -23,7 +22,6 @@ const UserCard = ({ user, border, handleClose, setShowFollowers, setShowFollowin
 
                     <div className="ml-3" style={{ transform: 'translateY(-2px)' }}>
                         <span className="d-block">{user.username}</span>
-
                         <small style={{ opacity: 0.7 }}>
                             {user.fullName}
                         </small>
@@ -32,8 +30,10 @@ const UserCard = ({ user, border, handleClose, setShowFollowers, setShowFollowin
                 </Link>
             </div>
 
+            {children}
+
         </div>
     )
 }
 
-export default UserCard
+export default UserCard;
