@@ -173,7 +173,7 @@
 
 /* --------- Post Card Header --------- */
 
-.posts .card_header {
+.posts .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -181,49 +181,49 @@
     padding: 15px 25px;
 }
 
-.posts .card_header .card_name {
+.posts .card-header .card-name {
     transform: translateY(3px);
 }
 
-.posts .card_header .dropdown-menu {
+.posts .card-header .dropdown-menu {
     position: absolute;
     right: 0;
     left: inherit;
 }
 
-.posts .card_header .dropdown-item {
+.posts .card-header .dropdown-item {
     display: flex;
     margin: 5px 0;
 }
 
 /* ---------- Post Card Body ---------- */
 
-.posts .card_body-content {
+.posts .card-body-content {
     padding: 0 25px;
     margin-top: -10px;
     margin-bottom: 10px;
 }
 
-.posts .card_body-content .readMore {
+.posts .card-body-content .readMore {
     color: crimson;
     cursor: pointer;
 }
 
 /* ---------- Post Card Footer ---------- */
 
-.posts .card_icon_menu {
+.posts .card-icon-menu {
     display: flex;
     justify-content: space-between;
     padding: 0 15px;
     cursor: pointer;
 }
 
-.posts .card_icon_menu i {
-    font-size: 28px;
+.posts .card-icon-menu i {
+    font-size: 22px;
     margin: 10px;
 }
 
-.posts .card_icon_menu img {
+.posts .card-icon-menu img {
     width: 28px;
     height: 28px;
     transform: translate(5px, -5px);

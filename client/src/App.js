@@ -6,10 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/actions/authAction";
 import PageRender from "./customRouter/PageRender";
-import './styles/global.css';
+import "./styles/global.css";
 import Header from "./components/header/Header";
 import PrivateRouter from "./customRouter/PrivateRouter";
 import NewPostModal from "./components/home/NewPost/NewPostModal";
+import { getPosts } from "./redux/actions/postAction";
 
 function App() {
 
@@ -23,9 +24,16 @@ function App() {
   }, [dispatch]);
 
 
+  useEffect(() => {
+    if (auth.token) {
+      dispatch(getPosts(auth, 1));
+    }
+  }, [auth, auth.token, dispatch]);
+
+
   return (
 
-    <div className='app'>
+    <div className='app main'>
       <Router>
 
         {auth.token && <Header />}

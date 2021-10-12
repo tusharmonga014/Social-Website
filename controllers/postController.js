@@ -82,7 +82,7 @@ const postController = {
             const paginatedPosts = paginating(allPosts, req.query);
             /** Paginated posts of people user is followng and the user. */
             const posts = await paginatedPosts.sort('-createdAt')
-                .populate("likes", "userImage username fullName followers")
+                .populate("user likes", "userImage username fullName followers");
 
             // WORK TO BE DONE
 
