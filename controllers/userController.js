@@ -109,13 +109,13 @@ const userController = {
             /** Users already being followed by user. */
             const usersAlreadyFollowed = [...req.user.following, req.user._id];
             /** Limit Query for number of users suggested. */
-            const numLimit = req.query.num || 10;
+            const limit = req.query.suggestionsLimit || 10;
 
 
             /** Suggestions for user to be sent in response. */
             const suggestions = await User.aggregate([
                 { $match: { _id: { $nin: usersAlreadyFollowed } } },
-                { $sample: { size: Number(numLimit) } },
+                { $sample: { size: Number(limit) } },
                 { $lookup: { from: 'users', localField: 'followers', foreignField: '_id', as: 'followers' } },
                 { $lookup: { from: 'users', localField: 'following', foreignField: '_id', as: 'following' } },
             ]).project("-password");
@@ -131,7 +131,7 @@ const userController = {
 
             return res.status(500).json({ msg: err.message })
         }
-        
+
     }
 
 }
