@@ -33,10 +33,10 @@ const FollowBtn = ({ user }) => {
     const handleUnFollow = async () => {
         if (load) return;
 
-        setFollowed(false)
-        setLoad(true)
-        await dispatch(unfollow({ users: profile.users, user, auth, socket }))
-        setLoad(false)
+        setFollowed(false);
+        setLoad(true);
+        await dispatch(unfollow({ users: profile.users, user, auth, socket }));
+        setLoad(false);
     }
 
 

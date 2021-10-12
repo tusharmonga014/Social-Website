@@ -9,6 +9,6 @@ userRouter.get('/:id', auth, userController.getUser);
 
 userRouter.patch('/:id/follow', auth, userController.follow);
 
-userRouter.patch('/:id/unfollow', auth, userController.follow);
+userRouter.patch('/:id/unfollow', auth, userController.unfollow);
 
 module.exports = userRouter;
