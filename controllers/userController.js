@@ -59,7 +59,6 @@ const userController = {
 
         try {
 
-
             const alreadyFollowing = await User.findOne({ _id: req.user._id, following: req.params.id });
             if (!alreadyFollowing) {
                 await User.updateOne({ _id: req.user._id }, { $push: { following: req.params.id } });
@@ -83,7 +82,6 @@ const userController = {
 
         try {
 
-
             const isFollowing = await User.findOne({ _id: req.user._id, following: req.params.id });
             if (!isFollowing) return res.status(400).json({ msg: 'User not following, cannot unfollow' });
 
@@ -100,6 +98,40 @@ const userController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    suggestionsForUser: async (req, res) => {
+
+        try {
+
+            /** Users already being followed by user. */
+            const usersAlreadyFollowed = [...req.user.following, req.user._id];
+            /** Limit Query for number of users suggested. */
+            const numLimit = req.query.num || 10;
+
+
+            /** Suggestions for user to be sent in response. */
+            const suggestions = await User.aggregate([
+                { $match: { _id: { $nin: usersAlreadyFollowed } } },
+                { $sample: { size: Number(numLimit) } },
+                { $lookup: { from: 'users', localField: 'followers', foreignField: '_id', as: 'followers' } },
+                { $lookup: { from: 'users', localField: 'following', foreignField: '_id', as: 'following' } },
+            ]).project("-password");
+
+
+            return res.json({
+                suggestions,
+                result: suggestions.length
+            })
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message })
+        }
+        
     }
 
 }
