@@ -1,5 +1,5 @@
 const Post = require("../models/postModel");
-const cloudinaryUploadMediaFile = require("../utils/cloudinaryFileUpload");
+const { cloudinaryUploadMediaFile } = require("../utils/cloudinary");
 const getDateTimeForUpload = require("../utils/getDateTimeForUpload");
 
 const postController = {

@@ -1,12 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
+const getFileType = require('../getFileType');
 
 
 const stream = (resolve, reject, fileType, cloudinaryPublicId) => cloudinary.uploader.upload_stream(
@@ -43,7 +37,7 @@ const cloudinaryFileUpload = (fileBuffer, fileType, cloudinaryPublicId) => {
  */
 const cloudinaryUploadMediaFile = async (file, cloudinaryPublicId) => {
     const fileBuffer = file.data;
-    const fileType = file.mimetype.substring(0, 5) === 'image' ? 'image' : 'video';
+    const fileType = getFileType(file);
     const response = await cloudinaryFileUpload(fileBuffer, fileType, cloudinaryPublicId);
     return response;
 }
