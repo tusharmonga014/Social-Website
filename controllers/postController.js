@@ -133,7 +133,8 @@ const uploadPostMediaToCloudinary = async (userId, files, media) => {
             const response = await cloudinaryUploadMediaFile(file, cloudinaryPublicId);
             const response_publicId = response.public_id;
             const response_url = response.secure_url;
-            media.push({ public_id: response_publicId, url: response_url });
+            const response_resource_type = response.resource_type;
+            media.push({ public_id: response_publicId, url: response_url, fileType: response_resource_type });
         }
     } else if (files) {
         const file = files;
@@ -141,7 +142,8 @@ const uploadPostMediaToCloudinary = async (userId, files, media) => {
         const response = await cloudinaryUploadMediaFile(file, cloudinaryPublicId);
         const response_publicId = response.public_id;
         const response_url = response.secure_url;
-        media.push({ public_id: response_publicId, url: response_url });
+        const response_resource_type = response.resource_type;
+        media.push({ public_id: response_publicId, url: response_url, fileType: response_resource_type });
     }
 }
 
