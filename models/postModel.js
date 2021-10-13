@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
         trim: true
     },
 
-    images: {
+    media: {
         type: Array
     },
 

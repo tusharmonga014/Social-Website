@@ -12,7 +12,7 @@ export const POST_TYPES = {
 }
 
 
-export const createPost = (content, images, auth) => async (dispatch) => {
+export const createPost = (content, media, auth) => async (dispatch) => {
 
     dispatch({
         type: POST_TYPES.POST_UPLOADING,
@@ -23,8 +23,8 @@ export const createPost = (content, images, auth) => async (dispatch) => {
     try {
 
         const formData = new FormData();
-        images.forEach(image => {
-            formData.append("images", image);
+        media.forEach(mediaFile => {
+            formData.append("media", mediaFile);
         });
         formData.append("content", content);
         await postDataAPI('posts/create-post', formData, auth.token);

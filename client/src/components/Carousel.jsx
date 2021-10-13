@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const Carousel = ({ images, id }) => {
+const Carousel = ({ media, id }) => {
 
     const isActive = index => {
         if (index === 0) return "active";
@@ -13,7 +13,7 @@ const Carousel = ({ images, id }) => {
 
             <ol className="carousel-indicators" style={{ zIndex: 1 }}>
                 {
-                    images.map((img, index) => (
+                    media.map((img, index) => (
                         <li key={index} data-target={`#image${id}`}
                             data-slide-to={index} className={isActive(index)} />
                     ))
@@ -22,7 +22,7 @@ const Carousel = ({ images, id }) => {
 
             <div className="carousel-inner">
                 {
-                    images.map((img, index) => (
+                    media.map((img, index) => (
                         <div key={index} className={`carousel-item ${isActive(index)} w-100`}>
                             {
                                 img.url.match(/video/i)
@@ -35,7 +35,7 @@ const Carousel = ({ images, id }) => {
             </div>
 
             {
-                images && images.length > 1 &&
+                media && media.length > 1 &&
                 <>
                     <a className="carousel-control-prev" href={`#image${id}`} role="button" data-slide="prev"
                         style={{ width: '5%' }}>

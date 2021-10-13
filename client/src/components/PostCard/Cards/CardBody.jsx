@@ -29,7 +29,7 @@ const CardBody = ({ post }) => {
             </div>
 
             {
-                post.images.length > 0 && <Carousel images={post.images} id={post._id} />
+                post.media.length > 0 && <Carousel media={post.media} id={post._id} />
             }
 
         </div>

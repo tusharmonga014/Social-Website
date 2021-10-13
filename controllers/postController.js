@@ -20,18 +20,18 @@ const postController = {
             const { content } = req.body;
 
             /** Post image and video files array for storing cloudinary public_id and url. */
-            const images = [];
+            const media = [];
 
 
             /** Files recieved in request. */
             const files = req.files;
             if (files) {
 
-                /** Post images and video files in request. */
-                const imageFiles = files.images;
-                if (imageFiles) {
+                /** Post media files in request. */
+                const mediaFiles = files.media;
+                if (mediaFiles) {
 
-                    await uploadPostImagesToCloudinary(newPostId, imageFiles, images);
+                    await uploadPostMediaToCloudinary(newPostId, mediaFiles, media);
                 }
             }
 
@@ -39,7 +39,7 @@ const postController = {
             /* Setting new post items. */
             newPost.user = userId;
             newPost.content = content;
-            newPost.images = images;
+            newPost.media = media;
 
 
             /* Saving the new post. */
@@ -113,12 +113,12 @@ const postController = {
 
 
 /**
- * Uploads post images to cloudinary and stores their publicID and url.
+ * Uploads post media to cloudinary and stores their publicID and url.
  * @param {String} postId _id of new post.
- * @param {*} files Image/Video files in the post to be uploaded.
- * @param {*} images Images array to be saved in database.
+ * @param {*} files Media files in the post to be uploaded.
+ * @param {*} media Media array to be saved in database.
  */
-const uploadPostImagesToCloudinary = async (userId, files, images) => {
+const uploadPostMediaToCloudinary = async (userId, files, media) => {
 
     /** Date and Time for upload record and publicID of post file. */
     const dateTime = getDateTimeForUpload();
@@ -133,7 +133,7 @@ const uploadPostImagesToCloudinary = async (userId, files, images) => {
             const response = await cloudinaryUploadMediaFile(file, cloudinaryPublicId);
             const response_publicId = response.public_id;
             const response_url = response.secure_url;
-            images.push({ public_id: response_publicId, url: response_url });
+            media.push({ public_id: response_publicId, url: response_url });
         }
     } else if (files) {
         const file = files;
@@ -141,7 +141,7 @@ const uploadPostImagesToCloudinary = async (userId, files, images) => {
         const response = await cloudinaryUploadMediaFile(file, cloudinaryPublicId);
         const response_publicId = response.public_id;
         const response_url = response.secure_url;
-        images.push({ public_id: response_publicId, url: response_url });
+        media.push({ public_id: response_publicId, url: response_url });
     }
 }
 

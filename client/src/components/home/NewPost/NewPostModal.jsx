@@ -14,14 +14,14 @@ const NewPostModal = () => {
     const dispatch = useDispatch();
 
 
-    const maxImages = 10;  // 10 images
+    const maxMedia = 10;  // 10 media files
     const maxContentLength = 500; // 500 characters
     const maxFileSize = 1024 * 1024 * 5;   // 5 mb
 
 
     const [content, setContent] = useState('');
     const [remainingContentLength, setRemainingContentLength] = useState(maxContentLength);
-    const [images, setImages] = useState([]);
+    const [media, setMedia] = useState([]);
 
 
     const [stream, setStream] = useState(false);
@@ -47,17 +47,17 @@ const NewPostModal = () => {
     }
 
 
-    const checkImageVideoFileLength = (addedLength) => {
-        if (images.length + addedLength > maxImages)
+    const checkMediaLength = (addedLength) => {
+        if (media.length + addedLength > maxMedia)
             return false;
         return true;
     }
 
 
-    const validateImageVideoFiles = (files) => {
+    const validateMediaFiles = (files) => {
         let err;
-        if (!checkImageVideoFileLength(files.length))
-            return 'Cannot add more than 10 photos/videos.';
+        if (!checkMediaLength(files.length))
+            return 'Cannot add more than 10 photos/video.';
         files.forEach(file => {
             if (!file)
                 return err = "File does not exist.";
@@ -73,17 +73,17 @@ const NewPostModal = () => {
     const handleChangeImages = event => {
         dispatch(setAlert({ newPostError: '' }));
         const files = [...event.target.files];
-        const err = validateImageVideoFiles(files);
+        const err = validateMediaFiles(files);
         if (err) dispatch(setAlert({ newPostError: err }));
-        else setImages([...images, ...files]);
+        else setMedia([...media, ...files]);
     }
 
 
-    const deleteImages = index => {
+    const deleteMedia = index => {
         dispatch(setAlert({ newPostError: '' }));
-        const newImagesArray = [...images];
-        newImagesArray.splice(index, 1);
-        setImages(newImagesArray);
+        const newMediaArray = [...media];
+        newMediaArray.splice(index, 1);
+        setMedia(newMediaArray);
     }
 
 
@@ -105,7 +105,7 @@ const NewPostModal = () => {
     const handleCapture = () => {
         dispatch(setAlert({ newPostError: '' }));
 
-        if (!checkImageVideoFileLength(1)) {
+        if (!checkMediaLength(1)) {
             dispatch(setAlert({ newPostError: 'Cannot add more than 10 photos/videos.' }));
             return;
         }
@@ -122,7 +122,7 @@ const NewPostModal = () => {
         const URL = refCanvas.current.toDataURL();
         const newImageFile = dataURLtoFile(URL, 'captured_image');
 
-        setImages([...images, newImageFile]);
+        setMedia([...media, newImageFile]);
     }
 
 
@@ -135,13 +135,13 @@ const NewPostModal = () => {
     const handleSubmit = event => {
         event.preventDefault();
         dispatch(setAlert({ newPostError: '' }));
-        if (!content && !images.length)
+        if (!content && !media.length)
             return dispatch(setAlert({ newPostError: 'Post cannot be empty.' }));
         // if (post.onEdit) {
-        // dispatch(updatePost({ content, images, auth, status }))
+        // dispatch(updatePost({ content, media, auth, status }))
         // } else {
-        dispatch(createPost(content, images, auth));
-        // dispatch(createPost({ content, images, auth, socket }))
+        dispatch(createPost(content, media, auth));
+        // dispatch(createPost({ content, media, auth, socket }))
         // }
         if (tracks) tracks.stop();
     }
@@ -162,23 +162,23 @@ const NewPostModal = () => {
         const postUploadButton = document.getElementsByClassName('post-button')[0];
         if (postUploadButton) {
             const disablePostButton = () => {
-                if (!content && !images.length) return true;
+                if (!content && !media.length) return true;
                 if (content.length > maxContentLength) return true;
-                if (!content.replace(/\s/g, "").length && !images.length) return true;
+                if (!content.replace(/\s/g, "").length && !media.length) return true;
                 return false;
             }
             if (disablePostButton()) postUploadButton.setAttribute('disabled', true);
             else postUploadButton.removeAttribute('disabled');
         }
 
-    }, [content, images]);
+    }, [content, media]);
 
 
     useEffect(() => {
 
         const textArea = document.querySelector('.new-post-body textarea');
         const textAreaEmojiIcon = document.querySelector('.new-post-body .emoji-icons');
-        const imageFilesCloseButton = document.querySelectorAll('.new-post-body .show-images span');
+        const mediaFilesCloseButton = document.querySelectorAll('.new-post-body .show-images span');
         const cameraUploadButton = document.querySelector('.new-post-body .input-images i');
         const fileUploadButton = document.querySelector('.new-post-body .input-images .file-upload');
 
@@ -187,13 +187,13 @@ const NewPostModal = () => {
             if (textAreaEmojiIcon) textAreaEmojiIcon.setAttribute('hidden', true);
             if (fileUploadButton) fileUploadButton.setAttribute('hidden', true);
             if (cameraUploadButton) cameraUploadButton.setAttribute('hidden', true);
-            if (imageFilesCloseButton) imageFilesCloseButton.forEach(closeButton => closeButton.setAttribute('hidden', true));
+            if (mediaFilesCloseButton) mediaFilesCloseButton.forEach(closeButton => closeButton.setAttribute('hidden', true));
         } else {
             textArea.removeAttribute('disabled');
             if (textAreaEmojiIcon) textAreaEmojiIcon.removeAttribute('hidden');
             if (fileUploadButton) fileUploadButton.removeAttribute('hidden');
             if (cameraUploadButton) cameraUploadButton.removeAttribute('hidden');
-            if (imageFilesCloseButton) imageFilesCloseButton.forEach(closeButton => closeButton.removeAttribute('hidden'));
+            if (mediaFilesCloseButton) mediaFilesCloseButton.forEach(closeButton => closeButton.removeAttribute('hidden'));
         }
 
     }, [post.postUploaded, post.postUploading]);
@@ -202,7 +202,7 @@ const NewPostModal = () => {
     // useEffect(() => {
     //     // if (post.onEdit) {
     //     //     setContent(post.content)
-    //     //     setImages(post.images)
+    //     //     setMedia(post.media)
     //     // }
     // }, [post]);
 
@@ -232,7 +232,7 @@ const NewPostModal = () => {
                     </div>
                     <div className="show-images">
                         {
-                            images.map((img, index) => (
+                            media.map((img, index) => (
                                 <div key={index} id="file-img">
                                     {
                                         img.camera ? <ImageThumbnail src={img.camera} alt="imgThumbnail" />
@@ -252,7 +252,7 @@ const NewPostModal = () => {
                                                     }
                                                 </>
                                     }
-                                    <span onClick={() => deleteImages(index)}>&times;</span>
+                                    <span onClick={() => deleteMedia(index)}>&times;</span>
                                 </div>
                             ))
                         }
