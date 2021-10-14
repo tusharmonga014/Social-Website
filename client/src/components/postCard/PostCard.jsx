@@ -3,6 +3,7 @@ import CardHeader from "./cards/CardHeader";
 import CardBody from "./cards/CardBody";
 import CardFooter from "./cards/CardFooter";
 import Comments from "../comments/Comments";
+import InputComment from "../comments/InputComment";
 
 
 const PostCard = ({ post }) => {
@@ -15,7 +16,7 @@ const PostCard = ({ post }) => {
             <CardFooter post={post} />
 
             <Comments post={post} />
-            {/* <InputComment post={post} /> */}
+            <InputComment post={post} />
 
         </div>
     );

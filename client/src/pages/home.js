@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import HomePosts from "../components/home/HomePosts";
-import NewPost from "../components/home/NewPos/NewPost";
+import NewPost from "../components/home/newPost/NewPost";
 import RightSideBar from "../components/home/RightSideBar";
 
 let scroll = 0;

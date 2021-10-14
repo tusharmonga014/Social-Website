@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoadIcon from "../images/loading.gif";
-import PostCard from "./postcar/PostCard";
+import PostCard from "./postCard/PostCard";
 import LoadMoreBtn from "./LoadMoreBtn";
 
 
