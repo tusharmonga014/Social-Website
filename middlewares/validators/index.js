@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 const loginValidationRules = require('./auth/loginValidationRules');
 const registerValidationRules = require('./auth/registerValidationRules');
 const newCommentValidationRules = require('./comment/newCommentValidationRules');
+const updateCommentValidationRules = require('./comment/updateCommentValidationRules');
 const newPostValidationRules = require('./post/newPostValidationRules');
 
 
@@ -101,7 +102,12 @@ const validateData = {
     createPost: validator(newPostValidationRules),
 
 
-    createComment: validator(newCommentValidationRules)
+    /* Comment creation validator */
+    createComment: validator(newCommentValidationRules),
+
+
+    /* Comment updation validator */
+    updateComment: validator(updateCommentValidationRules)
 
 
 };
