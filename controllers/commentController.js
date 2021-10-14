@@ -70,21 +70,17 @@ const commentController = {
             const { content } = req.body;
 
 
-            /** Comment to be updated. */
-            const comment = await Comment.findById(commentId);
-            if (!comment)
-                return res.status(404).json({ msg: 'This comment does not exist.' });
-            else if (!comment.user.equals(userId))
-                return res.status(403).json({ msg: 'Comment updation request failed. The comment does not belong to the user requestion updation.' });
-
-
             /** Updated comment. */
-            const updatedComment = await Comment.findByIdAndUpdate(commentId, { content }, { new: true });
+            const updatedComment = await Comment.findOneAndUpdate({ _id: commentId, user: userId }, { content });
+            if (!updatedComment) {
+                const commentWithMatchingId = await Comment.findById(commentId);
+                if (!commentWithMatchingId) return res.status(404).json({ msg: 'This comment does not exist.' });
+                return res.status(403).json({ msg: 'Comment updation request failed. The comment does not belong to the user requesting updation.' });
+            }
 
 
             res.json({
-                msg: 'Comment Updated.',
-                comment: updatedComment._doc
+                msg: 'Comment updated.'
             });
 
 
@@ -109,19 +105,91 @@ const commentController = {
             const commentId = req.params.id;
 
 
-            /** Comment to be deleted. */
-            const comment = await Comment.findById(commentId);
-            if (!comment)
-                return res.status(404).json({ msg: 'This comment does not exist.' });
-            else if (!comment.user.equals(userId))
-                return res.status(403).json({ msg: 'Comment deletion request failed. The comment does not belong to the user requestion deletion.' });
+            /** Deleted comment. */
+            const deletedComment = await Comment.findOneAndDelete({ _id: commentId, user: userId });
+            if (!deletedComment) {
+                const commentWithMatchingId = await Comment.findById(commentId);
+                if (!commentWithMatchingId) return res.status(404).json({ msg: 'This comment does not exist.' });
+                return res.status(403).json({ msg: 'Comment deletion request failed. The comment does not belong to the user requesting deletion.' });
+            }
 
 
-            await Comment.findByIdAndDelete(commentId);
+            /** Removing comment id from its post's comments' array. */
+            await Post.findOneAndUpdate({ _id: deletedComment.postId }, { $pull: { comments: deletedComment._id } });
 
 
             res.json({
-                msg: 'Comment Deleted.'
+                msg: 'Comment deleted.',
+            });
+
+
+        } catch (err) {
+
+            res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    likeComment: async (req, res) => {
+
+        try {
+
+            /** User id of the user making the comment request. */
+            const userId = req.user._id;
+
+
+            /** Id of comment to be liked. */
+            const commentId = req.params.id;
+
+
+            /** Tells whether the user has already liked this comment. */
+            const comment = await Comment.findOneAndUpdate({ _id: commentId, likes: { $nin: userId } }, { $push: { likes: userId } });
+            if (!comment) {
+                const commentWithMatchingId = await Comment.findById(commentId);
+                if (!commentWithMatchingId) return res.status(404).json({ msg: 'This comment does not exist.' });
+                return res.status(400).json({ msg: 'The user has already liked the comment.' });
+            }
+
+
+            res.json({
+                msg: 'Comment liked.'
+            });
+
+
+        } catch (err) {
+
+            res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    unlikeComment: async (req, res) => {
+
+        try {
+
+            /** User id of the user making the comment request. */
+            const userId = req.user._id;
+
+
+            /** Id of comment to be unliked. */
+            const commentId = req.params.id;
+
+
+            /** Tells whether the user has liked this comment. */
+            const comment = await Comment.findOneAndUpdate({ _id: commentId, likes: userId }, { $pull: { likes: userId } });
+            if (!comment) {
+                const commentWithMatchingId = await Comment.findById(commentId);
+                if (!commentWithMatchingId) return res.status(404).json({ msg: 'This comment does not exist.' });
+                return res.status(400).json({ msg: 'The user has not liked the comment.' });
+            }
+
+
+            res.json({
+                msg: 'Comment unliked.'
             });
 
 
