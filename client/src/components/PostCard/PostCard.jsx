@@ -1,7 +1,8 @@
 import React from "react";
-import CardHeader from "./Cards/CardHeader";
-import CardBody from "./Cards/CardBody";
-import CardFooter from "./Cards/CardFooter";
+import CardHeader from "./cards/CardHeader";
+import CardBody from "./cards/CardBody";
+import CardFooter from "./cards/CardFooter";
+import Comments from "../comments/Comments";
 
 
 const PostCard = ({ post }) => {
@@ -13,7 +14,7 @@ const PostCard = ({ post }) => {
             <CardBody post={post} />
             <CardFooter post={post} />
 
-            {/* <Comments post={post} /> */}
+            <Comments post={post} />
             {/* <InputComment post={post} /> */}
 
         </div>

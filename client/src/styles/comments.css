@@ -1,0 +1,68 @@
+.comment-input {
+    display: flex;
+    align-items: center;
+}
+
+.comment-input input {
+    background: #f7f7f7;
+    border: none;
+    outline: none;
+    flex: 1;
+    overflow: auto;
+}
+
+.comment-input .post-button {
+    border: none;
+    outline: none;
+    background: #695d5d;
+    font-weight: 500;
+}
+
+.comment-input .dropdown-menu {
+    transform: translate3d(-120px, -200px, 0px) !important;
+}
+
+/* ---------- Comments ---------- */
+
+.comment-display {
+    padding: 3px 25px;
+}
+
+.comment-card .comment-content {
+    background: #eee;
+    padding: 2px 10px;
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comment-card .comment-content .readMore {
+    cursor: pointer;
+}
+
+.comment-card .comment-content .nav-item {
+    cursor: pointer;
+    opacity: 0;
+}
+
+.comment-card .comment-content:hover .nav-item {
+    opacity: 1;
+}
+
+.comment-card .comment-content .dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: inherit;
+}
+
+.comment-card .comment-content .dropdown-item {
+    display: flex;
+}
+
+.comment-card .comment-content textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+}
