@@ -1,6 +1,7 @@
-import { postDataAPI } from "../../utils/fetchData";
+import { patchDataAPI, postDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
 import { POST_TYPES } from "./postAction";
+import { EditData } from "./TYPES";
 
 
 export const createComment = ({ post, newComment, auth }) => async (dispatch) => {
@@ -49,6 +50,31 @@ export const createComment = ({ post, newComment, auth }) => async (dispatch) =>
     } catch (err) {
 
         dispatch(setAlert({ newCommentError: err.response.data.msg }));
+    }
+
+}
+
+
+export const updateComment = ({ comment, post, content, auth }) => async (dispatch) => {
+
+    try {
+
+        await patchDataAPI(`comments/${comment._id}/update-comment`, { content }, auth.token);
+
+
+        const commentsArrayWithUpdatedComment = EditData(post.comments, comment._id, { ...comment, content });
+        const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
+
+
+        dispatch({
+            type: POST_TYPES.UPDATE_POST,
+            payload: updatedPost
+        });
+
+
+    } catch (err) {
+
+        dispatch(setAlert({ updateCommentError: err.response.data.msg }));
     }
 
 }

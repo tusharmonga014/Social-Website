@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import LikeButton from "../LikeButton";
 import UserImage from "../UserImage";
 import InputComment from "./InputComment";
 import CommentMenu from "./CommentMenu";
-// import { updateComment, likeComment, unLikeComment } from "../../../redux/actions/commentAction";
+import { updateComment } from "../../redux/actions/commentAction";
 
 
 const CommentCard = ({ children, comment, post, commentId }) => {
 
     const { auth } = useSelector(state => state);
+    const dispatch = useDispatch();
 
 
     const [content, setContent] = useState('');
@@ -27,9 +28,16 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
 
     const handleUpdate = () => {
-        // if (comment.content !== content)
-        // dispatch(updateComment({ comment, post, content, auth }));
+        if (comment.content === content || !content.trim())
+            return;
+        dispatch(updateComment({ comment, post, content, auth }));
         setOnEdit(false);
+    }
+
+
+    const cancelUpdate = () => {
+        setOnEdit(false);
+        setContent(comment.content);
     }
 
 
@@ -129,7 +137,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
                                         Edit
                                     </small>
                                     <small className="font-weight-bold mr-3 text-muted"
-                                        onClick={() => setOnEdit(false)}>
+                                        onClick={cancelUpdate}>
                                         Cancel
                                     </small>
                                 </>
