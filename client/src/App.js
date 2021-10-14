@@ -9,7 +9,7 @@ import PageRender from "./customRouter/PageRender";
 import "./styles/global.css";
 import Header from "./components/header/Header";
 import PrivateRouter from "./customRouter/PrivateRouter";
-import NewPostModal from "./components/home/newPost/NewPostModal";
+import NewPostModal from "./components/home/NewPos/NewPostModal";
 import { getPosts } from "./redux/actions/postAction";
 import { getSuggestions } from "./redux/actions/suggestionsAction";
 
