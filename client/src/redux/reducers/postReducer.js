@@ -1,4 +1,5 @@
 import { POST_TYPES } from "../actions/postAction";
+import { EditData } from "../actions/TYPES";
 
 const initialState = {
     newPostModal: false,
@@ -38,6 +39,11 @@ const postReducer = (state = initialState, action) => {
             return {
                 ...state,
                 homePosts: action.payload
+            };
+        case POST_TYPES.UPDATE_POST:
+            return {
+                ...state,
+                homePosts: { ...state.homePosts, posts: EditData(state.homePosts.posts, action.payload._id, action.payload) }
             };
         default:
             return state;

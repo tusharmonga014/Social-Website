@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { createComment } from "../../redux/actions/commentAction";
+import { createComment } from "../../redux/actions/commentAction";
 import Icons from "../Icons";
 
 
 const InputComment = ({ children, post, onReply, setOnReply }) => {
 
     const { auth } = useSelector(state => state)
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
 
     const [content, setContent] = useState('')
@@ -28,7 +28,7 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
             reply: onReply && onReply.commentId,
             tag: onReply && onReply.user
         }
-        // dispatch(createComment({ post, newComment, auth }));
+        dispatch(createComment({ post, newComment, auth }));
         if (setOnReply) return setOnReply(false);
     }
 
