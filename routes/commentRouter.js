@@ -10,8 +10,8 @@ commentRouter.patch('/:id/update-comment', auth, validateData.updateComment, com
 
 commentRouter.delete('/:id/delete-comment', auth, commentController.deleteComment);
 
-commentRouter.post('/:id/like-comment', auth, commentController.likeComment);
+commentRouter.patch('/:id/like-comment', auth, commentController.likeComment);
 
-commentRouter.post('/:id/unlike-comment', auth, commentController.unlikeComment);
+commentRouter.patch('/:id/unlike-comment', auth, commentController.unlikeComment);
 
 module.exports = commentRouter;
