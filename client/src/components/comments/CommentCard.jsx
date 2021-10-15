@@ -6,7 +6,7 @@ import LikeButton from "../LikeButton";
 import UserImage from "../UserImage";
 import InputComment from "./InputComment";
 import CommentMenu from "./CommentMenu";
-import { updateComment } from "../../redux/actions/commentAction";
+import { updateComment, likeComment, unlikeComment } from "../../redux/actions/commentAction";
 
 
 const CommentCard = ({ children, comment, post, commentId }) => {
@@ -19,17 +19,12 @@ const CommentCard = ({ children, comment, post, commentId }) => {
     const [readMore, setReadMore] = useState(false);
 
 
-    const [isLike, setIsLike] = useState(false);
-    const [loadLike, setLoadLike] = useState(false);
-
-
     const [onEdit, setOnEdit] = useState(false);
     const [onReply, setOnReply] = useState(false);
 
 
     const handleUpdate = () => {
-        if (comment.content === content || !content.trim())
-            return;
+        if (comment.content.trim() === content || !content.trim()) return;
         dispatch(updateComment({ comment, post, content, auth }));
         setOnEdit(false);
     }
@@ -41,21 +36,13 @@ const CommentCard = ({ children, comment, post, commentId }) => {
     }
 
 
-    const handleLike = async () => {
-        if (loadLike) return;
-        setIsLike(true);
-        setLoadLike(true);
-        // await dispatch(likeComment({ comment, post, auth }));
-        setLoadLike(false);
+    const handleLike = () => {
+        dispatch(likeComment({ comment, post, auth }));
     }
 
 
-    const handleUnLike = async () => {
-        if (loadLike) return;
-        setIsLike(false);
-        setLoadLike(true);
-        // await dispatch(unLikeComment({ comment, post, auth }));
-        setLoadLike(false);
+    const handleUnlike = () => {
+        dispatch(unlikeComment({ comment, post, auth }));
     }
 
 
@@ -73,10 +60,8 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
     useEffect(() => {
         setContent(comment.content);
-        setIsLike(false);
         setOnReply(false);
-        if (comment.likes.find(like => like._id === auth.user._id)) setIsLike(true);
-    }, [comment, auth.user._id]);
+    }, [comment, post, auth.user._id]);
 
 
     return (
@@ -127,7 +112,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
                             {moment(comment.createdAt).fromNow()}
                         </small>
                         <small className="mr-3 text-muted">
-                            {comment.likes.length} likes
+                            {comment.likes.length} {comment.likes.length === 1 ? 'like' : 'likes'}
                         </small>
                         {
                             onEdit
@@ -151,7 +136,8 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
                 <div className="d-flex align-items-center mx-2" style={{ cursor: 'pointer' }}>
                     <CommentMenu post={post} comment={comment} setOnEdit={setOnEdit} />
-                    <LikeButton isLike={isLike} handleLike={handleLike} handleUnLike={handleUnLike} />
+                    <LikeButton isLike={comment.likes.find(like => like === auth.user._id)}
+                        handleLike={handleLike} handleUnlike={handleUnlike} />
                 </div>
 
             </div>

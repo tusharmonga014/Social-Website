@@ -1,7 +1,7 @@
 import { patchDataAPI, postDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
 import { POST_TYPES } from "./postAction";
-import { EditData } from "./TYPES";
+import { DeleteData, EditData } from "./TYPES";
 
 
 export const createComment = ({ post, newComment, auth }) => async (dispatch) => {
@@ -75,6 +75,68 @@ export const updateComment = ({ comment, post, content, auth }) => async (dispat
     } catch (err) {
 
         dispatch(setAlert({ updateCommentError: err.response.data.msg }));
+    }
+
+}
+
+
+export const likeComment = ({ comment, post, auth }) => async (dispatch) => {
+
+    const updatedComment = { ...comment, likes: [...comment.likes, auth.user._id] };
+    const commentsArrayWithUpdatedComment = EditData(post.comments, comment._id, updatedComment);
+    const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
+
+
+    dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+
+
+    try {
+
+        await patchDataAPI(`comments/${comment._id}/like-comment`, null, auth.token);
+
+
+    } catch (err) {
+
+        const updatedComment = { ...comment, likes: DeleteData(comment.likes, auth.user._id) };
+        const commentsArrayWithUpdatedComment = EditData(post.comments, comment._id, updatedComment);
+        const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
+
+
+        dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+
+
+        dispatch(setAlert({ likeCommentError: err.response.data.msg }));
+    }
+
+}
+
+
+export const unlikeComment = ({ comment, post, auth }) => async (dispatch) => {
+
+    const updatedComment = { ...comment, likes: DeleteData(comment.likes, auth.user._id) };
+    const commentsArrayWithUpdatedComment = EditData(post.comments, comment._id, updatedComment);
+    const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
+
+
+    dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+
+
+    try {
+
+        await patchDataAPI(`comments/${comment._id}/unlike-comment`, null, auth.token);
+
+
+    } catch (err) {
+
+        const updatedComment = { ...comment, likes: [...comment.likes, auth.user._id] };
+        const commentsArrayWithUpdatedComment = EditData(post.comments, comment._id, updatedComment);
+        const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
+
+
+        dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+
+
+        dispatch(setAlert({ unlikeCommentError: err.response.data.msg }));
     }
 
 }

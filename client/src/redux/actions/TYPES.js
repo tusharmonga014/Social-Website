@@ -6,12 +6,12 @@ export const TYPES = {
 }
 
 /**
- * Deletes a specific element from a data array.
+ * Deletes a specific element from a data array with matching id.
  * @param {Array} data Data from which a specific element needs to be removed.
  * @param {*} id Id for specific element which is to be removed from data.
  * @returns Data with the element deleted.
  */
-export const DeleteData = (data, id) => {
+export const DeleteDataById = (data, id) => {
     const newData = data.filter(item => item._id !== id)
     return newData;
 }
@@ -27,10 +27,20 @@ export const EditData = (originalData, id, element) => {
 
     /** New data which will have the updated element. */
     let newData = [...originalData];
-    
     let elementIndex = newData.findIndex((ele => ele._id === id));
     if (elementIndex !== -1) newData[elementIndex] = element;
     else newData.push(element);
 
+    return newData;
+}
+
+/**
+  * Deletes a specific element from a data array.
+  * @param {Array} data Data from which a specific element needs to be removed.
+  * @param {*} ele Specific element which is to be removed from data.
+  * @returns Data with the element deleted.
+  */
+export const DeleteData = (data, ele) => {
+    const newData = data.filter(item => item !== ele)
     return newData;
 }
