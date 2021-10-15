@@ -1,6 +1,7 @@
-const Post = require("../models/postModel");
-const { cloudinaryUploadMediaFile } = require("../utils/cloudinary");
-const getDateTimeForUpload = require("../utils/getDateTimeForUpload");
+const Post = require('../models/postModel');
+const Comment = require('../models/commentModel');
+const { cloudinaryUploadMediaFile, cloudinaryDeleteFile } = require('../utils/cloudinary');
+const getDateTimeForUpload = require('../utils/getDateTimeForUpload');
 
 const postController = {
 
@@ -105,7 +106,99 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    updatePost: async (req, res) => {
+
+        try {
+
+            /** Id of user. */
+            const userId = req.user._id;
+            /** Post id of the post to be updated. */
+            const postId = req.params.id;
+
+
+            /** Post content which needs to be updated. */
+            const content = req.body.content;
+
+
+            /** Post which needs to be updated */
+            const post = await Post.findOneAndUpdate({ _id: postId, user: userId }, { content });
+            if (!post) {
+                const postWithMatchingId = await Post.findById(postId);
+                if (!postWithMatchingId) return res.status(404).json({ msg: 'This post does not exist.' });
+                return res.status(403).json({ msg: 'The user does not have the permission to update this post.' });
+            }
+
+
+            res.json({
+                msg: 'Post Updated.',
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    deletePost: async (req, res) => {
+
+        try {
+
+            /** Id of user. */
+            const userId = req.user._id;
+
+            /** Id of the post to be deleted. */
+            const postId = req.params.id;
+
+
+            /** Post to be deleted. */
+            const post = await Post.findOneAndDelete({ _id: postId, user: userId });
+            if (!post) {
+                const postWithMatchingId = await Post.findById(postId);
+                if (!postWithMatchingId) return res.status(404).json({ msg: 'This post does not exist.' });
+                return res.status(403).json({ msg: 'The user does not have the permission to delete this post.' });
+            }
+
+
+            /** Post's media array. */
+            const media = post._doc.media;
+            
+
+            /** Post's images. */
+            const imagesArray = media.filter(file => file.fileType === 'image');
+            for (let fileCounter = 0; fileCounter < imagesArray.length; fileCounter++)
+                await cloudinaryDeleteFile(imagesArray[fileCounter].public_id, 'image');
+
+
+            /** Post's videos. */
+            const videosArray = media.filter(file => file.fileType === 'video');
+            for (let fileCounter = 0; fileCounter < videosArray.length; fileCounter++)
+                await cloudinaryDeleteFile(videosArray[fileCounter].public_id, 'video');
+
+
+            /* Deleting all the comments of this post. */
+            await Comment.deleteMany({ postId });
+
+
+            res.json({
+                msg: 'Post Deleted.'
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
     }
+
 }
 
 

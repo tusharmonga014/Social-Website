@@ -120,8 +120,21 @@ const commentController = {
             }
 
 
+            /** All the replies to this comment. */
+            const replies = await Comment.find({ reply: commentId });
+            /** All the replies' id to this comment. */
+            const replyIds = [];
+            replies.forEach(reply => replyIds.push(reply._id));
+
+
+            /** Removing all the replies to this comment. */
+            await Comment.deleteMany({ reply: commentId });
+
+
             /** Removing comment id from its post's comments' array. */
             await Post.findOneAndUpdate({ _id: deletedComment.postId }, { $pull: { comments: deletedComment._id } });
+            /** Removing reply comments to deleted comment from its post's comments' array. */
+            await Post.updateMany({ _id: deletedComment.postId }, { $pull: { comments: { $in: replyIds } } });
 
 
             res.json({

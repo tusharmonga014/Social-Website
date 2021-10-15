@@ -8,4 +8,8 @@ postRouter.post('/create-post', auth, validateData.createPost, postController.cr
 
 postRouter.get('/feed-posts', auth, postController.getPosts);
 
+postRouter.patch('/:id/update-post', auth, postController.updatePost);
+
+postRouter.delete('/:id/delete-post', auth, postController.deletePost);
+
 module.exports = postRouter;
