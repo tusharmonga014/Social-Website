@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import LikeButton from "../../LikeButton";
-// import { likePost, unLikePost, savePost, unSavePost } from "../../../redux/actions/postAction";
 import ShareModal from "../../ShareModal";
 import { BASE_URL } from "../../../utils/config";
+import { likePost, unlikePost } from "../../../redux/actions/postAction";
 
 
 const CardFooter = ({ post }) => {
 
     const { auth } = useSelector(state => state);
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
 
-    const [isLike, setIsLike] = useState(false);
-    const [loadLike, setLoadLike] = useState(false);
     const [isShare, setIsShare] = useState(false);
 
 
@@ -22,19 +20,13 @@ const CardFooter = ({ post }) => {
     const [saveLoad, setSaveLoad] = useState(false);
 
 
-    const handleLike = async () => {
-        if (loadLike) return;
-        setLoadLike(true);
-        // await dispatch(likePost({post, auth}));
-        setLoadLike(false);
+    const handleLike = () => {
+        dispatch(likePost(post, auth));
     }
 
 
-    const handleUnLike = async () => {
-        if (loadLike) return;
-        setLoadLike(true);
-        // await dispatch(unLikePost({post, auth}));
-        setLoadLike(false);
+    const handleUnlike = () => {
+        dispatch(unlikePost(post, auth));
     }
 
 
@@ -54,12 +46,6 @@ const CardFooter = ({ post }) => {
     }
 
 
-    useEffect(() => {
-        if (post.likes.find(like => like._id === auth.user._id)) setIsLike(true);
-        else setIsLike(false);
-    }, [post.likes, auth.user._id]);
-
-
     // useEffect(() => {
     // if (auth.user.saved.find(id => id === post._id)) setSaved(true);
     // else setSaved(false);
@@ -72,9 +58,9 @@ const CardFooter = ({ post }) => {
             <div className="card-icon-menu">
                 <div>
                     <LikeButton
-                        isLike={isLike}
+                        isLike={post.likes.find(like => like === auth.user._id)}
                         handleLike={handleLike}
-                        handleUnLike={handleUnLike}
+                        handleUnlike={handleUnlike}
                     />
                     <Link to={`/post/${post._id}`} className="text-dark">
                         <i className="far fa-comment" />

@@ -1,4 +1,5 @@
 import { postDataAPI, getDataAPI, patchDataAPI, deleteDataAPI } from "../../utils/fetchData";
+import { DeleteData } from "./TYPES";
 import { setAlert } from "./alertAction";
 
 export const POST_TYPES = {
@@ -152,7 +153,75 @@ export const deletePost = (post, auth) => async (dispatch) => {
 
     } catch (err) {
 
-        dispatch(setAlert({ deletePostError: 'Post update failed, please try again.' }));
+        dispatch(setAlert({ deletePostError: err.response.data.msg }));
+    }
+
+}
+
+
+export const likePost = (post, auth) => async (dispatch) => {
+
+    const updatedPost = { ...post, likes: [...post.likes, auth.user._id] };
+
+
+    dispatch({
+        type: POST_TYPES.UPDATE_POST,
+        payload: updatedPost
+    });
+
+
+    try {
+
+        const postId = post._id;
+        await patchDataAPI(`posts/${postId}/like-post`, null, auth.token);
+
+
+    } catch (err) {
+
+        const updatedPost = { ...post, likes: DeleteData(post.likes, auth.user._id) };
+
+
+        dispatch({
+            type: POST_TYPES.UPDATE_POST,
+            payload: updatedPost
+        });
+
+
+        dispatch(setAlert({ likePostError: err.response.data.msg }));
+    }
+
+}
+
+
+export const unlikePost = (post, auth) => async (dispatch) => {
+
+    const updatedPost = { ...post, likes: DeleteData(post.likes, auth.user._id) };
+
+
+    dispatch({
+        type: POST_TYPES.UPDATE_POST,
+        payload: updatedPost
+    });
+
+
+    try {
+
+        const postId = post._id;
+        await patchDataAPI(`posts/${postId}/unlike-post`, null, auth.token);
+
+
+    } catch (err) {
+
+        const updatedPost = { ...post, likes: [...post.likes, auth.user._id] };
+
+
+        dispatch({
+            type: POST_TYPES.UPDATE_POST,
+            payload: updatedPost
+        });
+
+
+        dispatch(setAlert({ unlikePostError: err.response.data.msg }));
     }
 
 }

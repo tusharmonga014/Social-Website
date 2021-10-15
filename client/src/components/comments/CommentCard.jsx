@@ -127,7 +127,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
                     }
                     <div style={{ cursor: 'pointer' }}>
                         <small className="mr-3 text-muted">
-                            {comment.likes.length} {comment.likes.length === 1 ? 'like' : 'likes'}
+                            {comment.likes.length} likes
                         </small>
                         {
                             onEdit
