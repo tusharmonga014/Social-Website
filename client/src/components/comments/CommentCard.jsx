@@ -5,8 +5,7 @@ import moment from "moment";
 import LikeButton from "../LikeButton";
 import UserImage from "../UserImage";
 import InputComment from "./InputComment";
-import CommentMenu from "./CommentMenu";
-import { updateComment, likeComment, unlikeComment } from "../../redux/actions/commentAction";
+import { updateComment, likeComment, unlikeComment, deleteComment } from "../../redux/actions/commentAction";
 
 
 const CommentCard = ({ children, comment, post, commentId }) => {
@@ -52,9 +51,25 @@ const CommentCard = ({ children, comment, post, commentId }) => {
     }
 
 
+    const handleRemove = () => {
+        if (post.user._id === auth.user._id || comment.user._d === auth.user._id)
+            dispatch(deleteComment({ comment, post, auth }));
+    }
+
+
     const styleCard = {
         opacity: comment._id ? 1 : 0.5,
         pointerEvents: comment._id ? 'inherit' : 'none'
+    }
+
+
+    const MenuItem = () => {
+        return (
+            <>
+                <small className="font-weight-bold mr-2 text-muted" onClick={() => setOnEdit(true)}>Edit</small>
+                <small className="font-weight-bold text-muted" onClick={handleRemove}>Remove</small>
+            </>
+        );
     }
 
 
@@ -71,6 +86,9 @@ const CommentCard = ({ children, comment, post, commentId }) => {
             <Link to={`/profile/${comment.user._id}`} className="d-flex text-dark">
                 <UserImage src={comment.user.userImage} size="small" />
                 <small className="mx-1 ml-2 font-weight-bold">{comment.user.username}</small>
+                <small className="text-muted">
+                    {moment(comment.createdAt).fromNow()}
+                </small>
             </Link>
 
 
@@ -79,7 +97,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
                 <div className="flex-fill">
                     {
                         onEdit
-                            ? <textarea rows="5" value={content}
+                            ? <textarea rows="5" value={content} autoFocus
                                 onChange={event => setContent(event.target.value)} />
                             : <div>
                                 {
@@ -108,34 +126,41 @@ const CommentCard = ({ children, comment, post, commentId }) => {
                             </div>
                     }
                     <div style={{ cursor: 'pointer' }}>
-                        <small className="text-muted mr-3">
-                            {moment(comment.createdAt).fromNow()}
-                        </small>
                         <small className="mr-3 text-muted">
                             {comment.likes.length} {comment.likes.length === 1 ? 'like' : 'likes'}
                         </small>
                         {
                             onEdit
                                 ? <>
-                                    <small className="font-weight-bold mr-3 text-muted"
+                                    <small className="font-weight-bold mr-2 text-muted"
                                         onClick={handleUpdate}>
-                                        Edit
+                                        Update
                                     </small>
-                                    <small className="font-weight-bold mr-3 text-muted"
+                                    <small className="font-weight-bold mr-2 text-muted"
                                         onClick={cancelUpdate}>
                                         Cancel
                                     </small>
                                 </>
-                                : <small className="font-weight-bold mr-3 text-muted"
-                                    onClick={handleReply}>
-                                    {onReply ? 'Cancel' : 'Reply'}
-                                </small>
+                                : <>
+                                    <small className="font-weight-bold mr-2 text-muted"
+                                        onClick={handleReply}>
+                                        {onReply ? 'Cancel' : 'Reply'}
+                                    </small>
+                                    {
+                                        !onReply ?
+                                            post.user._id === auth.user._id
+                                                ? comment.user._id === auth.user._id
+                                                    ? MenuItem()
+                                                    : <small className="font-weight-bold text-muted" onClick={handleRemove}>Remove</small>
+                                                : comment.user._id === auth.user._id && MenuItem()
+                                            : null
+                                    }
+                                </>
                         }
                     </div>
                 </div>
 
                 <div className="d-flex align-items-center mx-2" style={{ cursor: 'pointer' }}>
-                    <CommentMenu post={post} comment={comment} setOnEdit={setOnEdit} />
                     <LikeButton isLike={comment.likes.find(like => like === auth.user._id)}
                         handleLike={handleLike} handleUnlike={handleUnlike} />
                 </div>

@@ -1,7 +1,7 @@
-import { patchDataAPI, postDataAPI } from "../../utils/fetchData";
+import { deleteDataAPI, patchDataAPI, postDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
 import { POST_TYPES } from "./postAction";
-import { DeleteData, EditData } from "./TYPES";
+import { DeleteData, DeleteDataById, EditData } from "./TYPES";
 
 
 export const createComment = ({ post, newComment, auth }) => async (dispatch) => {
@@ -87,7 +87,10 @@ export const likeComment = ({ comment, post, auth }) => async (dispatch) => {
     const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
 
 
-    dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+    dispatch({
+        type: POST_TYPES.UPDATE_POST,
+        payload: updatedPost
+    });
 
 
     try {
@@ -102,7 +105,10 @@ export const likeComment = ({ comment, post, auth }) => async (dispatch) => {
         const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
 
 
-        dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+        dispatch({
+            type: POST_TYPES.UPDATE_POST,
+            payload: updatedPost
+        });
 
 
         dispatch(setAlert({ likeCommentError: err.response.data.msg }));
@@ -118,7 +124,10 @@ export const unlikeComment = ({ comment, post, auth }) => async (dispatch) => {
     const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
 
 
-    dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+    dispatch({
+        type: POST_TYPES.UPDATE_POST,
+        payload: updatedPost
+    });
 
 
     try {
@@ -133,10 +142,46 @@ export const unlikeComment = ({ comment, post, auth }) => async (dispatch) => {
         const updatedPost = { ...post, comments: commentsArrayWithUpdatedComment };
 
 
-        dispatch({ type: POST_TYPES.UPDATE_POST, payload: updatedPost });
+        dispatch({
+            type: POST_TYPES.UPDATE_POST,
+            payload: updatedPost
+        });
 
 
         dispatch(setAlert({ unlikeCommentError: err.response.data.msg }));
+    }
+
+}
+
+
+export const deleteComment = ({ comment, post, auth }) => async (dispatch) => {
+
+    const updatedPost = { ...post, comments: DeleteDataById(post.comments, comment._id) };
+
+
+    dispatch({
+        type: POST_TYPES.UPDATE_POST,
+        payload: updatedPost
+    });
+
+
+    try {
+
+        await deleteDataAPI(`comments/${comment._id}/delete-comment`, auth.token);
+
+
+    } catch (err) {
+
+        const updatedPost = { ...post, comments: EditData(post.comments, comment._id, comment) };
+
+
+        dispatch({
+            type: POST_TYPES.UPDATE_POST, payload:
+                updatedPost
+        });
+
+
+        dispatch(setAlert({ deleteCommentError: err.response.data.msg }));
     }
 
 }

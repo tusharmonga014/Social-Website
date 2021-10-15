@@ -106,11 +106,17 @@ const commentController = {
 
 
             /** Deleted comment. */
-            const deletedComment = await Comment.findOneAndDelete({ _id: commentId, user: userId });
+            const deletedComment = await Comment.findOneAndDelete({
+                _id: commentId,
+                $or: [
+                    { user: userId },
+                    { postUserId: userId }
+                ]
+            });
             if (!deletedComment) {
                 const commentWithMatchingId = await Comment.findById(commentId);
                 if (!commentWithMatchingId) return res.status(404).json({ msg: 'This comment does not exist.' });
-                return res.status(403).json({ msg: 'Comment deletion request failed. The comment does not belong to the user requesting deletion.' });
+                return res.status(403).json({ msg: 'Comment deletion request failed. The user does not have the permission to delete this comment.' });
             }
 
 

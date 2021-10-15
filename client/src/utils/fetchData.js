@@ -54,3 +54,21 @@ export const patchDataAPI = async (url, data, token) => {
         throw err;
     }
 }
+
+
+/**
+ * Deletes data requesting to the specified url from API.
+ * @param {String} url - Url from which data needs to be deleted
+ * @param {*} token    - Authorization token
+ * @returns Response recieved from the API
+ */
+export const deleteDataAPI = async (url, token) => {
+    try {
+        const res = await axios.delete(`/api/${url}`, {
+            headers: { Authorization: token }
+        })
+        return res;
+    } catch (err) {
+        throw err;
+    }
+}

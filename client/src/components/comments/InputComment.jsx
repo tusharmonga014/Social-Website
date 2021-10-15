@@ -38,7 +38,7 @@ const InputComment = ({ children, post, onReply, setOnReply }) => {
 
             {children}
 
-            <input type="text" className="small" placeholder="Add your comment"
+            <input type="text" className="small" placeholder="Add your comment" autoFocus
                 value={content} onChange={event => setContent(event.target.value)} />
 
             <Icons setContent={setContent} content={content} />
