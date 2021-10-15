@@ -1,20 +1,21 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import UserImage from "../../UserImage";
 import { BASE_URL } from "../../../utils/config";
+import { POST_TYPES } from "../../../redux/actions/postAction";
 
 
 const CardHeader = ({ post }) => {
 
     const { auth } = useSelector(state => state);
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     // const history = useHistory();
 
 
     const handleEditPost = () => {
-        //     dispatch({ type: GLOBALTYPES.STATUS, payload: {...post, onEdit: true}})
+        dispatch({ type: POST_TYPES.ON_EDIT, payload: { ...post } });
     }
 
 

@@ -1,4 +1,4 @@
-import { postDataAPI, getDataAPI } from "../../utils/fetchData";
+import { postDataAPI, getDataAPI, patchDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
 
 export const POST_TYPES = {
@@ -8,7 +8,8 @@ export const POST_TYPES = {
     POST_UPLOADED: 'POST_UPLOADED',
     POSTS_LOADING: 'POSTS_LOADING',
     GET_POSTS: 'GET_POSTS',
-    UPDATE_POST: 'UPDATE_POST'
+    UPDATE_POST: 'UPDATE_POST',
+    ON_EDIT: 'ON_EDIT'
 
 }
 
@@ -84,6 +85,44 @@ export const getPosts = (auth, homePostsPage, limit) => async (dispatch) => {
 
     dispatch({
         type: POST_TYPES.POSTS_LOADING,
+        payload: false
+    });
+
+}
+
+
+export const updatePost = (content, media, auth, post) => async (dispatch) => {
+
+    dispatch({
+        type: POST_TYPES.POST_UPLOADING,
+        payload: true
+    });
+
+
+    try {
+
+        const postId = post._id;
+        await patchDataAPI(`posts/${postId}/update-post`, { content, media }, auth.token);
+
+
+        dispatch({
+            type: POST_TYPES.POST_UPLOADED,
+            payload: true
+        });
+
+
+    } catch (err) {
+
+        dispatch({
+            type: POST_TYPES.POST_UPLOADED,
+            payload: false
+        });
+        dispatch(setAlert({ newPostError: 'Post update failed, please try again.' }));
+    }
+
+
+    dispatch({
+        type: POST_TYPES.POST_UPLOADING,
         payload: false
     });
 

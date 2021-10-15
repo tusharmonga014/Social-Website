@@ -45,6 +45,11 @@ const postReducer = (state = initialState, action) => {
                 ...state,
                 homePosts: { ...state.homePosts, posts: EditData(state.homePosts.posts, action.payload._id, action.payload) }
             };
+        case POST_TYPES.ON_EDIT:
+            return {
+                ...state,
+                onEdit: action.payload
+            };
         default:
             return state;
     }

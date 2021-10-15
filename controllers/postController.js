@@ -125,12 +125,55 @@ const postController = {
 
 
             /** Post which needs to be updated */
-            const post = await Post.findOneAndUpdate({ _id: postId, user: userId }, { content });
+            const post = await Post.findOne({ _id: postId, user: userId });
             if (!post) {
                 const postWithMatchingId = await Post.findById(postId);
                 if (!postWithMatchingId) return res.status(404).json({ msg: 'This post does not exist.' });
                 return res.status(403).json({ msg: 'The user does not have the permission to update this post.' });
             }
+
+
+            /** Post's media array. */
+            const media = post._doc.media;
+            /** Updated media array recieved in request. */
+            const recievedMedia = req.body.media;
+            /** Media array to be updated. */
+            const updatedMedia = [];
+
+
+            /* Reject if request has new files. */
+            recievedMedia.map(recievedMediaFile => {
+                let recievedMediaFileFound = false;
+                for (const mediaFile of media) {
+                    if (mediaFile.public_id === recievedMediaFile.public_id && mediaFile.url === recievedMediaFile.url
+                        && mediaFile.fileType === recievedMediaFile.fileType) {
+                        recievedMediaFileFound = true;
+                        break;
+                    }
+                }
+                if (!recievedMediaFileFound) return res.status(400).json({ msg: 'Request contains extra media files than post.' });
+            });
+
+
+            /** Media files which are to be removed from cloudinary. */
+            const mediaToBeDeleted = media.filter(mediaFile => {
+                let mediaFileFound = false;
+                for (const recievedMediaFile of recievedMedia) {
+                    if (mediaFile.public_id === recievedMediaFile.public_id && mediaFile.url === recievedMediaFile.url
+                        && mediaFile.fileType === recievedMediaFile.fileType) {
+                        mediaFileFound = true;
+                        updatedMedia.push(mediaFile);
+                        break;
+                    }
+                }
+                if (!mediaFileFound) return mediaFile;
+            });
+
+
+            /* Updating post content and media. */
+            await Post.findOneAndUpdate({ _id: postId, user: userId }, { content, $set: { media: updatedMedia } });
+            /* Deleting removed media files from cloudinary. */
+            await deletePostMediaFromCloudinary(mediaToBeDeleted);
 
 
             res.json({
@@ -169,20 +212,10 @@ const postController = {
 
             /** Post's media array. */
             const media = post._doc.media;
-            
-
-            /** Post's images. */
-            const imagesArray = media.filter(file => file.fileType === 'image');
-            for (let fileCounter = 0; fileCounter < imagesArray.length; fileCounter++)
-                await cloudinaryDeleteFile(imagesArray[fileCounter].public_id, 'image');
 
 
-            /** Post's videos. */
-            const videosArray = media.filter(file => file.fileType === 'video');
-            for (let fileCounter = 0; fileCounter < videosArray.length; fileCounter++)
-                await cloudinaryDeleteFile(videosArray[fileCounter].public_id, 'video');
-
-
+            /* Deleting post's media files from cloudinary. */
+            await deletePostMediaFromCloudinary(media);
             /* Deleting all the comments of this post. */
             await Comment.deleteMany({ postId });
 
@@ -250,6 +283,25 @@ const paginating = (query, queryString) => {
     const skip = (page - 1) * limit;
     query = query.skip(skip).limit(limit);
     return query;
+}
+
+
+/**
+ * Removes post media files from cloudinary.
+ * @param {Array} media Media array containing files to be removed.
+ */
+const deletePostMediaFromCloudinary = async (media) => {
+
+    /** Post's images. */
+    const imagesArray = media.filter(file => file.fileType === 'image');
+    for (let fileCounter = 0; fileCounter < imagesArray.length; fileCounter++)
+        await cloudinaryDeleteFile(imagesArray[fileCounter].public_id, 'image');
+
+    /** Post's videos. */
+    const videosArray = media.filter(file => file.fileType === 'video');
+    for (let fileCounter = 0; fileCounter < videosArray.length; fileCounter++)
+        await cloudinaryDeleteFile(videosArray[fileCounter].public_id, 'video');
+
 }
 
 

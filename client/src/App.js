@@ -39,7 +39,7 @@ function App() {
       <Router>
 
         {auth.token && <Header />}
-        {post.newPostModal && <NewPostModal />}
+        {(post.newPostModal || post.onEdit) && <NewPostModal />}
         {auth.token && <Route exact path="/" component={Home} />}
         {!auth.token && <Route exact path="/" component={Login} />}
         <Route exact path="/register" component={Register} />

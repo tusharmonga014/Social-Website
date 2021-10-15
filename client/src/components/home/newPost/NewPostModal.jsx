@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createPost, POST_TYPES } from "../../../redux/actions/postAction";
+import { createPost, POST_TYPES, updatePost } from "../../../redux/actions/postAction";
 import Icons from "../../Icons";
 import ImageThumbnail from "../../ImageThumbnail";
 import VideoThumbnail from "../../VideoThumbnail";
@@ -137,12 +137,12 @@ const NewPostModal = () => {
         dispatch(setAlert({ newPostError: '' }));
         if (!content && !media.length)
             return dispatch(setAlert({ newPostError: 'Post cannot be empty.' }));
-        // if (post.onEdit) {
-        // dispatch(updatePost({ content, media, auth, status }))
-        // } else {
-        dispatch(createPost(content, media, auth));
-        // dispatch(createPost({ content, media, auth, socket }))
-        // }
+        const postContent = content;
+        const postMedia = [...media];
+        if (post.onEdit) dispatch(updatePost(content, media, auth, post.onEdit));
+        else dispatch(createPost(content, media, auth));
+        setContent(postContent);
+        setMedia(postMedia);
         if (tracks) tracks.stop();
     }
 
@@ -152,6 +152,10 @@ const NewPostModal = () => {
             type: POST_TYPES.NEW_POST_MODAL,
             payload: false
         });
+        dispatch({
+            type: POST_TYPES.ON_EDIT,
+            payload: false
+        })
         dispatch(setAlert({ newPostError: '' }));
     }
 
@@ -199,12 +203,12 @@ const NewPostModal = () => {
     }, [post.postUploaded, post.postUploading]);
 
 
-    // useEffect(() => {
-    //     // if (post.onEdit) {
-    //     //     setContent(post.content)
-    //     //     setMedia(post.media)
-    //     // }
-    // }, [post]);
+    useEffect(() => {
+        if (post.onEdit) {
+            setContent(post.onEdit.content);
+            setMedia(post.onEdit.media);
+        }
+    }, [post.onEdit]);
 
 
     return (
@@ -267,16 +271,18 @@ const NewPostModal = () => {
                     }
                     <div className="input-images">
                         {
-                            stream
-                                ? <i className="fas fa-camera" onClick={handleCapture} />
-                                : <>
-                                    <i className="fas fa-camera" onClick={handleStream} />
-                                    <div className="file-upload">
-                                        <i className="fas fa-image" />
-                                        <input type="file" name="file" id="file" multiple
-                                            accept="image/*,video/*" onChange={handleChangeImages} />
-                                    </div>
-                                </>
+                            !post.onEdit
+                                ? stream
+                                    ? <i className="fas fa-camera" onClick={handleCapture} />
+                                    : <>
+                                        <i className="fas fa-camera" onClick={handleStream} />
+                                        <div className="file-upload">
+                                            <i className="fas fa-image" />
+                                            <input type="file" name="file" id="file" multiple
+                                                accept="image/*,video/*" onChange={handleChangeImages} />
+                                        </div>
+                                    </>
+                                : null
                         }
                     </div>
                 </div>
@@ -302,7 +308,7 @@ const NewPostModal = () => {
                                         {alert.newPostError ? alert.newPostError : ""}
                                     </small>
                                     <button className="post-button btn btn-secondary w-100" type="submit">
-                                        Post
+                                        {post.onEdit ? 'Update' : 'Post'}
                                     </button>
                                 </>
                             }

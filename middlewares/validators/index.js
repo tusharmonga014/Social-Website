@@ -4,6 +4,7 @@ const registerValidationRules = require('./auth/registerValidationRules');
 const newCommentValidationRules = require('./comment/newCommentValidationRules');
 const updateCommentValidationRules = require('./comment/updateCommentValidationRules');
 const newPostValidationRules = require('./post/newPostValidationRules');
+const updatePostValidationRules = require('./post/updatePostValidationRules');
 
 
 /**
@@ -32,7 +33,6 @@ const getReqRoute = (req) => {
 
     } catch (err) {
 
-        console.error(err);
         throw new Error("Could not get the req's route path.");
 
     }
@@ -52,10 +52,7 @@ const getReqRouteValidationRules = (req) => {
     catch (err) { throw new Error(err.message); }
 
     try { return require(`./${reqRoute}`); }
-    catch (err) {
-        console.error(err);
-        throw new Error('Error reading validation rules.');
-    }
+    catch (err) { throw new Error('Error reading validation rules.'); }
 }
 
 
@@ -107,7 +104,11 @@ const validateData = {
 
 
     /* Comment updation validator */
-    updateComment: validator(updateCommentValidationRules)
+    updateComment: validator(updateCommentValidationRules),
+
+
+    /* Update post validator */
+    updatePost: validator(updatePostValidationRules)
 
 
 };
