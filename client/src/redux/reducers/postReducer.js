@@ -1,5 +1,5 @@
 import { POST_TYPES } from "../actions/postAction";
-import { EditData } from "../actions/TYPES";
+import { DeleteDataById, EditData } from "../actions/TYPES";
 
 const initialState = {
     newPostModal: false,
@@ -49,6 +49,11 @@ const postReducer = (state = initialState, action) => {
             return {
                 ...state,
                 onEdit: action.payload
+            };
+        case POST_TYPES.REMOVE_POST:
+            return {
+                ...state,
+                homePosts: { ...state.homePosts, posts: DeleteDataById(state.homePosts.posts, action.payload._id) }
             };
         default:
             return state;

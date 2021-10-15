@@ -1,17 +1,18 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import UserImage from "../../UserImage";
 import { BASE_URL } from "../../../utils/config";
-import { POST_TYPES } from "../../../redux/actions/postAction";
+import { deletePost, POST_TYPES } from "../../../redux/actions/postAction";
 
 
 const CardHeader = ({ post }) => {
 
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
-    // const history = useHistory();
+    const history = useHistory();
 
 
     const handleEditPost = () => {
@@ -20,10 +21,10 @@ const CardHeader = ({ post }) => {
 
 
     const handleDeletePost = () => {
-        //     if(window.confirm("Are you sure want to delete this post?")){
-        //         dispatch(deletePost({post, auth, socket}))
-        //         return history.push("/")
-        //     }
+        if (window.confirm("Are you sure want to delete this post?")) {
+            dispatch(deletePost(post, auth));
+            return history.push("/");
+        }
     }
 
 

@@ -1,4 +1,4 @@
-import { postDataAPI, getDataAPI, patchDataAPI } from "../../utils/fetchData";
+import { postDataAPI, getDataAPI, patchDataAPI, deleteDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
 
 export const POST_TYPES = {
@@ -9,7 +9,8 @@ export const POST_TYPES = {
     POSTS_LOADING: 'POSTS_LOADING',
     GET_POSTS: 'GET_POSTS',
     UPDATE_POST: 'UPDATE_POST',
-    ON_EDIT: 'ON_EDIT'
+    ON_EDIT: 'ON_EDIT',
+    REMOVE_POST: 'REMOVE_POST'
 
 }
 
@@ -106,6 +107,12 @@ export const updatePost = (content, media, auth, post) => async (dispatch) => {
 
 
         dispatch({
+            type: POST_TYPES.UPDATE_POST,
+            payload: { ...post, content: content, media: media }
+        });
+
+
+        dispatch({
             type: POST_TYPES.POST_UPLOADED,
             payload: true
         });
@@ -125,5 +132,27 @@ export const updatePost = (content, media, auth, post) => async (dispatch) => {
         type: POST_TYPES.POST_UPLOADING,
         payload: false
     });
+
+}
+
+
+export const deletePost = (post, auth) => async (dispatch) => {
+
+    try {
+
+        const postId = post._id;
+        await deleteDataAPI(`posts/${postId}/delete-post`, auth.token);
+
+
+        dispatch({
+            type: POST_TYPES.REMOVE_POST,
+            payload: post
+        });
+
+
+    } catch (err) {
+
+        dispatch(setAlert({ deletePostError: 'Post update failed, please try again.' }));
+    }
 
 }
