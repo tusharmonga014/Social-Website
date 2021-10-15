@@ -230,6 +230,72 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    likePost: async (req, res) => {
+
+        try {
+
+            /** Id of user. */
+            const userId = req.user._id;
+
+            /** Id of the post to be liked. */
+            const postId = req.params.id;
+
+            /** Tells whether the user has already liked this post. */
+            const post = await Post.findOneAndUpdate({ _id: postId, likes: { $nin: userId } }, { $push: { likes: userId } });
+            if (!post) {
+                const postWithMatchingId = await Post.findById(postId);
+                if (!postWithMatchingId) return res.status(404).json({ msg: 'This post does not exist.' });
+                return res.status(400).json({ msg: 'The user has already liked the post.' });
+            }
+
+
+            res.json({
+                msg: 'Post liked.'
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    unlikePost: async (req, res) => {
+
+        try {
+
+            /** Id of user. */
+            const userId = req.user._id;
+
+            /** Id of the post to be unliked. */
+            const postId = req.params.id;
+
+            /** Tells whether the user has liked this post. */
+            const post = await Post.findOneAndUpdate({ _id: postId, likes: userId }, { $pull: { likes: userId } });
+            if (!post) {
+                const postWithMatchingId = await Post.findById(postId);
+                if (!postWithMatchingId) return res.status(404).json({ msg: 'This post does not exist.' });
+                return res.status(400).json({ msg: 'The user has not liked the post.' });
+            }
+
+
+            res.json({
+                msg: 'Post unliked.'
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
     }
 
 }

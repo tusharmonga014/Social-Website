@@ -12,4 +12,8 @@ postRouter.patch('/:id/update-post', auth, validateData.updatePost, postControll
 
 postRouter.delete('/:id/delete-post', auth, postController.deletePost);
 
+postRouter.patch('/:id/like-post', auth, postController.likePost);
+
+postRouter.patch('/:id/unlike-post', auth, postController.unlikePost);
+
 module.exports = postRouter;
