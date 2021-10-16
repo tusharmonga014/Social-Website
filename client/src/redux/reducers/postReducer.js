@@ -1,5 +1,5 @@
 import { POST_TYPES } from "../actions/postAction";
-import { DeleteDataById, EditData } from "../actions/TYPES";
+import { DeleteDataById, EditData, updateDataIfElementPresent } from "../actions/TYPES";
 
 const initialState = {
     newPostModal: false,
@@ -7,7 +7,8 @@ const initialState = {
     postUploaded: false,
     homePosts: {
         page: 1
-    }
+    },
+    detailedPosts: []
 };
 
 const postReducer = (state = initialState, action) => {
@@ -43,7 +44,8 @@ const postReducer = (state = initialState, action) => {
         case POST_TYPES.UPDATE_POST:
             return {
                 ...state,
-                homePosts: { ...state.homePosts, posts: EditData(state.homePosts.posts, action.payload._id, action.payload) }
+                homePosts: { ...state.homePosts, posts: EditData(state.homePosts.posts, action.payload._id, action.payload) },
+                detailedPosts: updateDataIfElementPresent(state.detailedPosts, action.payload._id, action.payload)
             };
         case POST_TYPES.ON_EDIT:
             return {
@@ -53,7 +55,13 @@ const postReducer = (state = initialState, action) => {
         case POST_TYPES.REMOVE_POST:
             return {
                 ...state,
-                homePosts: { ...state.homePosts, posts: DeleteDataById(state.homePosts.posts, action.payload._id) }
+                homePosts: { ...state.homePosts, posts: DeleteDataById(state.homePosts.posts, action.payload._id) },
+                detailedPosts: DeleteDataById(state.detailedPosts, action.payload._id)
+            };
+        case POST_TYPES.GET_POST:
+            return {
+                ...state,
+                detailedPosts: [...state.detailedPosts, action.payload]
             };
         default:
             return state;

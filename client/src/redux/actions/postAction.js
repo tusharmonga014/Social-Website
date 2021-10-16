@@ -11,7 +11,8 @@ export const POST_TYPES = {
     GET_POSTS: 'GET_POSTS',
     UPDATE_POST: 'UPDATE_POST',
     ON_EDIT: 'ON_EDIT',
-    REMOVE_POST: 'REMOVE_POST'
+    REMOVE_POST: 'REMOVE_POST',
+    GET_POST: 'GET_POST'
 
 }
 
@@ -222,6 +223,28 @@ export const unlikePost = (post, auth) => async (dispatch) => {
 
 
         dispatch(setAlert({ unlikePostError: err.response.data.msg }));
+    }
+
+}
+
+
+export const getPost = (id, auth) => async (dispatch) => {
+
+    try {
+
+        const res = await getDataAPI(`posts/${id}/get-post`, auth.token);
+        const recievedPost = res.data.post;
+
+
+        dispatch({
+            type: POST_TYPES.GET_POST,
+            payload: recievedPost
+        });
+
+
+    } catch (err) {
+
+        dispatch(setAlert({ getPostError: err.response }));
     }
 
 }

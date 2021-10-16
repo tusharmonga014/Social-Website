@@ -52,8 +52,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
 
     const handleRemove = () => {
-        if (post.user._id === auth.user._id || comment.user._d === auth.user._id)
-            dispatch(deleteComment({ comment, post, auth }));
+        dispatch(deleteComment({ comment, post, auth }));
     }
 
 

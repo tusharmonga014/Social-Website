@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import LikeButton from "../../LikeButton";
 import ShareModal from "../../ShareModal";
 import { BASE_URL } from "../../../utils/config";
@@ -11,8 +11,10 @@ const CardFooter = ({ post }) => {
 
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
+    const location = useLocation();
 
 
+    const { pathname } = location;
     const [isShare, setIsShare] = useState(false);
 
 
@@ -62,9 +64,13 @@ const CardFooter = ({ post }) => {
                         handleLike={handleLike}
                         handleUnlike={handleUnlike}
                     />
-                    <Link to={`/post/${post._id}`} className="text-dark">
-                        <i className="far fa-comment" />
-                    </Link>
+                    {
+                        pathname === `/post/${post._id}`
+                            ? <i className="far fa-comment text-dark" />
+                            : <Link to={`/post/${post._id}`} className="text-dark">
+                                <i className="far fa-comment" />
+                            </Link>
+                    }
                     <i className="fas fa-paper-plane" onClick={() => setIsShare(!isShare)}></i>
                 </div>
                 {

@@ -44,3 +44,18 @@ export const DeleteData = (data, ele) => {
     const newData = data.filter(item => item !== ele)
     return newData;
 }
+
+/**
+ * Returns a new array with updated element if present.
+ * @param {Array} data Original data array.
+ * @param {*} id Id of the element to be updated if present.
+ * @param {*} element Element to be updated if present.
+ * @returns New array with updated element if it was present.
+ */
+export const updateDataIfElementPresent = (data, id, element) => {
+    /** New data which will have the updated element if its present. */
+    let newData = [...data];
+    let elementIndex = newData.findIndex((ele => ele._id === id));
+    if (elementIndex !== -1) newData[elementIndex] = { ...element };
+    return newData;
+}
