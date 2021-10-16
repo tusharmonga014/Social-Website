@@ -2,6 +2,7 @@ const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
 const { cloudinaryUploadMediaFile, cloudinaryDeleteFile } = require('../utils/cloudinary');
 const getDateTimeForUpload = require('../utils/getDateTimeForUpload');
+const User = require('../models/userModel');
 
 const postController = {
 
@@ -296,13 +297,89 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    getUserPosts: async (req, res) => {
+
+        try {
+
+            /** Id of the user whose posts are to be sent. */
+            const userId = req.params.id;
+
+            /** User whose posts are to be sent. */
+            const user = await User.findById(userId);
+            if (!user) return res.status(404).json({ msg: 'This user does not exist.' });
+
+
+            /** User's all posts which are to be sent. */
+            const unpaginatedUserPosts = Post.find({ user: userId });
+
+            /** Paginated user posts to be sent according to query. */
+            const paginatedUserPosts = paginating(unpaginatedUserPosts, req.query);
+
+            /** User's posts to be sent according to query limit. */
+            const userPosts = await paginatedUserPosts.sort('-createdAt');
+
+
+            res.json({
+                msg: 'User Posts Sent.',
+                posts: userPosts,
+                result: userPosts.length
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    getPost: async (req, res) => {
+
+        try {
+
+            /** Id of the post to be sent. */
+            const postId = req.params.id;
+
+
+            /** Post to be sent in response. */
+            const post = await Post.findById(postId)
+                .populate('user', 'userImage username fullName followers')
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user',
+                        select: '-password'
+                    }
+                });
+
+
+            if (!post) return res.status(400).json({ msg: 'This post does not exist.' });
+
+
+            res.json({
+                msg: 'Post Sent.',
+                post
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
     }
 
 }
 
 
 /**
- * Uploads post media to cloudinary and stores their publicID and url.
+ * Uploads post media to cloudinary and stores their publicID, url and fileType.
  * @param {String} postId _id of new post.
  * @param {*} files Media files in the post to be uploaded.
  * @param {*} media Media array to be saved in database.

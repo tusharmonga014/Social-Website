@@ -16,4 +16,8 @@ postRouter.patch('/:id/like-post', auth, postController.likePost);
 
 postRouter.patch('/:id/unlike-post', auth, postController.unlikePost);
 
+postRouter.get('/:id/get-user-posts', auth, postController.getUserPosts);
+
+postRouter.get('/:id/get-post', auth, postController.getPost);
+
 module.exports = postRouter;
