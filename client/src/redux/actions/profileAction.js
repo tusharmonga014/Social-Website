@@ -1,6 +1,6 @@
 import { getDataAPI, patchDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
-import { TYPES, DeleteData } from "./TYPES";
+import { TYPES, DeleteData, DeleteDataById } from "./TYPES";
 
 export const PROFILE_TYPES = {
 
@@ -116,11 +116,11 @@ export const unfollow = ({ users, user, auth, socket }) => async (dispatch) => {
     let newUser;
 
     if (users.every(item => item._id !== user._id)) {
-        newUser = { ...user, followers: DeleteData(user.followers, auth.user._id) }
+        newUser = { ...user, followers: DeleteDataById(user.followers, auth.user._id) }
     } else {
         users.forEach(item => {
             if (item._id === user._id) {
-                newUser = { ...item, followers: DeleteData(item.followers, auth.user._id) }
+                newUser = { ...item, followers: DeleteDataById(item.followers, auth.user._id) }
             }
         });
     }
@@ -136,7 +136,7 @@ export const unfollow = ({ users, user, auth, socket }) => async (dispatch) => {
             ...auth,
             user: {
                 ...auth.user,
-                following: DeleteData(auth.user.following, newUser._id)
+                following: DeleteDataById(auth.user.following, newUser._id)
             }
         }
     });
