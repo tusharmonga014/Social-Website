@@ -12,7 +12,8 @@ export const POST_TYPES = {
     UPDATE_POST: 'UPDATE_POST',
     ON_EDIT: 'ON_EDIT',
     REMOVE_POST: 'REMOVE_POST',
-    GET_POST: 'GET_POST'
+    GET_POST: 'GET_POST',
+    GET_USER_POSTS: 'GET_USER_POSTS'
 
 }
 
@@ -68,9 +69,10 @@ export const getPosts = (auth, homePostsPage, limit) => async (dispatch) => {
 
     try {
 
-        limit = limit || 9;
+        limit = limit * 1 || 9;
+        homePostsPage = homePostsPage * 1 || 1;
 
-        const url = `posts/feed-posts?limit=${homePostsPage * limit}`;
+        const url = `posts/feed-posts?limit=${limit}&page=${homePostsPage}`;
         const res = await getDataAPI(url, auth.token);
 
         const { posts, result } = res.data;
@@ -245,6 +247,31 @@ export const getPost = (id, auth) => async (dispatch) => {
     } catch (err) {
 
         dispatch(setAlert({ getPostError: err.response }));
+    }
+
+}
+
+
+export const getUserPosts = (id, auth, page, limit) => async (dispatch) => {
+
+    try {
+
+        limit = limit * 1 || 9;
+
+        const url = `posts/${id}/get-user-posts?limit=${limit}&page=${page}`;
+        const res = await getDataAPI(url, auth.token);
+        const postsData = res.data;
+
+
+        dispatch({
+            type: POST_TYPES.GET_USER_POSTS,
+            payload: { posts: postsData.posts, _id: id, result: postsData.result, page: page + 1 }
+        });
+
+
+    } catch (err) {
+
+        dispatch(setAlert({ getUserPostsError: err.response.data.msg }));
     }
 
 }

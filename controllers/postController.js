@@ -75,16 +75,16 @@ const postController = {
             const userFollowing = req.user.following;
 
 
-            /** All posts of people user is followng and the user. */
-            const allPosts = Post.find({
-                user: [...userFollowing, userId]
-            });
+            /** Page to be returned for query. */
+            const page = req.query.page * 1 || 1;
+            /** Number of posts to be returned of mentioned page. */
+            const limit = req.query.limit * 1 || 9;
 
 
-            /** Paginated Posts.*/
-            const paginatedPosts = paginating(allPosts, req.query);
-            /** Paginated posts of people user is followng and the user. */
-            const posts = await paginatedPosts.sort('-createdAt')
+            /** Posts of people user is followng and the user. */
+            const posts = await Post.find({ user: [...userFollowing, userId] })
+                .skip((page - 1) * limit).limit(limit)
+                .sort('-createdAt')
                 .populate('user', 'userImage username fullName followers')
                 .populate({
                     path: 'comments',
@@ -313,20 +313,30 @@ const postController = {
             if (!user) return res.status(404).json({ msg: 'This user does not exist.' });
 
 
+            /** Page to be returned for query. */
+            const page = req.query.page * 1 || 1;
+            /** Number of posts to be returned of mentioned page. */
+            const limit = req.query.limit * 1 || 9;
+
+
             /** User's all posts which are to be sent. */
-            const unpaginatedUserPosts = Post.find({ user: userId });
-
-            /** Paginated user posts to be sent according to query. */
-            const paginatedUserPosts = paginating(unpaginatedUserPosts, req.query);
-
-            /** User's posts to be sent according to query limit. */
-            const userPosts = await paginatedUserPosts.sort('-createdAt');
+            const posts = await Post.find({ user: userId })
+                .skip((page - 1) * limit).limit(limit)
+                .sort('-createdAt')
+                .populate('user', 'userImage username fullName followers')
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user',
+                        select: '-password'
+                    }
+                });
 
 
             res.json({
                 msg: 'User Posts Sent.',
-                posts: userPosts,
-                result: userPosts.length
+                result: posts.length,
+                posts
             });
 
 
@@ -411,21 +421,6 @@ const uploadPostMediaToCloudinary = async (userId, files, media) => {
         const response_resource_type = response.resource_type;
         media.push({ public_id: response_publicId, url: response_url, fileType: response_resource_type });
     }
-}
-
-
-/**
- * Paginates the documents based on request's query.
- * @param {*} query Mongoose query.
- * @param {*} queryString Request's query object.
- * @returns Paginated mongoose query.
- */
-const paginating = (query, queryString) => {
-    const page = queryString.page * 1 || 1;
-    const limit = queryString.limit * 1 || 9;
-    const skip = (page - 1) * limit;
-    query = query.skip(skip).limit(limit);
-    return query;
 }
 
 

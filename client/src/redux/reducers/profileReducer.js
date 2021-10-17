@@ -4,12 +4,11 @@ import { EditData } from "../actions/TYPES";
 const initialState = {
     loading: false,
     ids: [],
-    users: [],
-    posts: []
+    users: []
 }
 
 const profileReducer = (state = initialState, action) => {
-    switch (action.type){
+    switch (action.type) {
         case PROFILE_TYPES.LOADING:
             return {
                 ...state,
@@ -35,19 +34,9 @@ const profileReducer = (state = initialState, action) => {
                 ...state,
                 ids: [...state.ids, action.payload]
             };
-        // case PROFILE_TYPES.GET_POSTS:
-        //     return {
-        //         ...state,
-        //         posts: [...state.posts, action.payload]
-        //     };
-        // case PROFILE_TYPES.UPDATE_POST:
-        //     return {
-        //         ...state,
-        //         posts: EditData(state.posts, action.payload._id, action.payload)
-        //     };
         default:
             return state;
     }
 }
 
-export default profileReducer
+export default profileReducer;

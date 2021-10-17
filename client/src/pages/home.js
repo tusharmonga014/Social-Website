@@ -4,7 +4,7 @@ import HomePosts from "../components/home/HomePosts";
 import NewPost from "../components/home/newPost/NewPost";
 import RightSideBar from "../components/home/RightSideBar";
 
-let scroll = 0;
+let scrollHome = 0;
 
 const Home = () => {
 
@@ -14,15 +14,15 @@ const Home = () => {
 
     window.addEventListener('scroll', () => {
         if (window.location.pathname === '/') {
-            scroll = window.pageYOffset;
-            return scroll;
+            scrollHome = window.pageYOffset;
+            return scrollHome;
         }
     });
 
 
     useEffect(() => {
         setTimeout(() => {
-            window.scrollTo({ top: scroll, behavior: 'smooth' });
+            window.scrollTo({ top: scrollHome, behavior: 'smooth' });
         }, 100);
     }, []);
 

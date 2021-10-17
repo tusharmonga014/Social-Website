@@ -1,20 +1,19 @@
 import { getDataAPI, patchDataAPI } from "../../utils/fetchData";
+import { setAlert } from "./alertAction";
 import { TYPES, DeleteData } from "./TYPES";
 
 export const PROFILE_TYPES = {
 
-    LOADING: "LOADING_PROFILE",
-    GET_USER: "GET_PROFILE_USER",
-    FOLLOW: "FOLLOW",
-    UNFOLLOW: "UNFOLLOW",
-    GET_ID: "GET_PROFILE_ID",
-    GET_POSTS: "GET_PROFILE_POSTS",
-    UPDATE_POST: "UPDATE_PROFILE_POST"
+    LOADING: 'LOADING_PROFILE',
+    GET_USER: 'GET_USER',
+    FOLLOW: 'FOLLOW',
+    UNFOLLOW: 'UNFOLLOW',
+    GET_ID: 'GET_ID'
 
 }
 
 
-export const getProfileUsers = ({ id, auth }) => async (dispatch) => {
+export const getProfileUsers = (id, auth, defaultTab) => async (dispatch) => {
 
     dispatch({
         type: PROFILE_TYPES.GET_ID,
@@ -24,36 +23,34 @@ export const getProfileUsers = ({ id, auth }) => async (dispatch) => {
 
     try {
 
-        dispatch({ type: PROFILE_TYPES.LOADING, payload: true });
-        const res = getDataAPI(`user/get-user/${id}`, auth.token);
-        // const res1 = getDataAPI(`/user_posts/${id}`, auth.token)
+        dispatch({
+            type: PROFILE_TYPES.LOADING,
+            payload: true
+        });
 
-        const users = await res;
-        // const posts = await res1;
-        const posts = {};
+
+        const res = await getDataAPI(`user/get-user/${id}`, auth.token);
+        const usersData = res.data;
+
 
         dispatch({
             type: PROFILE_TYPES.GET_USER,
-            payload: users.data
+            payload: usersData
         });
 
-        dispatch({
-            type: PROFILE_TYPES.GET_POSTS,
-            payload: { ...posts.data, _id: id, page: 2 }
-        });
+
+        defaultTab && dispatch(defaultTab.getComponentData(id, auth, 1));
+
 
         dispatch({
             type: PROFILE_TYPES.LOADING,
             payload: false
         });
 
+
     } catch (err) {
 
-        dispatch({
-            type: TYPES.ALERT,
-            payload: { error: err.response.data.msg }
-        });
-
+        dispatch(setAlert({ getProfileUsersError: err.response.data.msg }));
     }
 
 }
