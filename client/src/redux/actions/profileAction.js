@@ -1,6 +1,6 @@
 import { getDataAPI, patchDataAPI } from "../../utils/fetchData";
 import { setAlert } from "./alertAction";
-import { TYPES, DeleteData, DeleteDataById } from "./TYPES";
+import { TYPES, DeleteDataById } from "./TYPES";
 
 export const PROFILE_TYPES = {
 

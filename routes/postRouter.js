@@ -20,4 +20,6 @@ postRouter.get('/:id/get-user-posts', auth, postController.getUserPosts);
 
 postRouter.get('/:id/get-post', auth, postController.getPost);
 
+postRouter.get('/:id/get-user-media', auth, postController.getUserMedia);
+
 module.exports = postRouter;

@@ -383,6 +383,53 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    getUserMedia: async (req, res) => {
+
+        try {
+
+            /** User whose media is to be sent. */
+            const userId = req.params.id;
+
+            /** User whose media is to be snet. */
+            const user = await User.findById(userId);
+            if (!user) return res.status(404).json({ msg: 'This user does not exist.' });
+
+
+            /** Page to be returned for query. */
+            const page = req.query.page * 1 || 1;
+            /** Number of posts to be returned of mentioned page. */
+            const limit = req.query.limit * 1 || 9;
+
+
+            /** Posts which have media. */
+            const mediaPosts = await Post.find({ user: userId, 'media.0': { '$exists': true } }).skip((page - 1) * limit).limit(limit);
+
+
+            /** Media to be sent. */
+            const media = [];
+            mediaPosts.map(mediaPost => {
+                mediaPost.media.map(mediaFile => {
+                    media.push({ ...mediaFile, postId: mediaPost._id });
+                });
+            });
+
+
+            res.json({
+                msg: 'User Media Sent.',
+                media: media,
+                result: media.length
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
     }
 
 }

@@ -65,29 +65,6 @@ const userSchema = mongoose.Schema({
         }
     ],
 
-    media: [
-        {
-            public_id: {
-                type: String,
-                required: true,
-                unique: true
-            },
-            postId: {
-                type: mongoose.Types.ObjectId,
-                ref: 'Post'
-            },
-            url: {
-                type: String,
-                required: true,
-                unique: true
-            },
-            fileType: {
-                type: String,
-                required: true
-            }
-        }
-    ],
-
     saved: [
         {
             type: mongoose.Types.ObjectId,
