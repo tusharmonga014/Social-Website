@@ -157,7 +157,6 @@ const NewPostModal = () => {
             payload: false
         })
         dispatch(setAlert({ newPostError: '' }));
-        if (!post.onEdit) window.location.reload();
     }
 
 

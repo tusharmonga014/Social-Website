@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import moment from "moment";
 import UserImage from "../../UserImage";
@@ -12,7 +11,6 @@ const CardHeader = ({ post }) => {
 
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
-    const history = useHistory();
 
 
     const location = useLocation();
@@ -27,7 +25,6 @@ const CardHeader = ({ post }) => {
     const handleDeletePost = () => {
         if (window.confirm("Are you sure want to delete this post?")) {
             dispatch(deletePost(post, auth));
-            return history.push("/");
         }
     }
 

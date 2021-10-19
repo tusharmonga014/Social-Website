@@ -34,12 +34,48 @@ export const createPost = (content, media, auth) => async (dispatch) => {
             formData.append("media", mediaFile);
         });
         formData.append("content", content);
-        await postDataAPI('posts/create-post', formData, auth.token);
+
+
+        const res = await postDataAPI('posts/create-post', formData, auth.token);
+        const { newPost } = res.data;
+
+
+        newPost.user = {
+            _id: auth.user._id,
+            username: auth.user.username,
+            userImage: auth.user.userImage
+        };
+        const newPostReversedMedia = newPost.media.map((mediaFile, index, media) => {
+            const newMediaFile = { ...media[media.length - 1 - index], postId: newPost._id };
+            return newMediaFile;
+        });
+
 
         dispatch({
             type: POST_TYPES.POST_UPLOADED,
             payload: true
         });
+
+
+        dispatch({
+            type: POST_TYPES.POST_UPLOADING,
+            payload: false
+        });
+
+
+        dispatch({
+            type: POST_TYPES.GET_USER_POSTS,
+            payload: { post: newPost, _id: auth.user._id, userAddedNewPost: true }
+        });
+
+
+        dispatch({
+            type: POST_TYPES.GET_USER_MEDIA,
+            payload: { media: newPostReversedMedia, _id: auth.user._id, userAddedNewPost: true }
+        });
+
+
+        dispatch(getPosts(auth, 1, 9, true));
 
 
     } catch (err) {
@@ -48,19 +84,15 @@ export const createPost = (content, media, auth) => async (dispatch) => {
             type: POST_TYPES.POST_UPLOADED,
             payload: false
         });
+
+
         dispatch(setAlert({ newPostError: 'Post update failed, please try again.' }));
     }
-
-
-    dispatch({
-        type: POST_TYPES.POST_UPLOADING,
-        payload: false
-    });
 
 }
 
 
-export const getPosts = (auth, homePostsPage, limit) => async (dispatch) => {
+export const getPosts = (auth, homePostsPage, limit, refreshHome) => async (dispatch) => {
 
     dispatch({
         type: POST_TYPES.POSTS_LOADING,
@@ -79,7 +111,7 @@ export const getPosts = (auth, homePostsPage, limit) => async (dispatch) => {
         const { posts, result } = res.data;
         dispatch({
             type: POST_TYPES.GET_POSTS,
-            payload: { posts, result, page: homePostsPage + 1 }
+            payload: { posts, result, page: homePostsPage + 1, refreshHome }
         });
 
 

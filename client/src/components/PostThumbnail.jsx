@@ -15,7 +15,7 @@ const PostThumbnail = ({ media }) => {
                             {
                                 mediaFile.url.match(/video/i)
                                     ? <video controls src={getCostumoizedUrl(mediaFile.url, 'w_400', true)} alt={mediaFile.url} />
-                                    : <img src={getCostumoizedUrl(mediaFile.url, 'w_600', true)} alt={mediaFile.url} />
+                                    : <img src={getCostumoizedUrl(mediaFile.url, 'w_500', true)} alt={mediaFile.url} />
                             }
                         </div>
 

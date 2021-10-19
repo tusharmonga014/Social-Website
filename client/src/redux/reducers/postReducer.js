@@ -42,7 +42,9 @@ const postReducer = (state = initialState, action) => {
         case POST_TYPES.GET_POSTS:
             return {
                 ...state,
-                homePosts: { posts: [...state.homePosts.posts, ...action.payload.posts], result: action.payload.result, page: action.payload.page }
+                homePosts: action.payload.refreshHome
+                    ? { posts: action.payload.posts, result: action.payload.result, page: action.payload.page }
+                    : { posts: [...state.homePosts.posts, ...action.payload.posts], result: action.payload.result, page: action.payload.page }
             };
         case POST_TYPES.GET_USER_POSTS:
             return {
@@ -50,10 +52,18 @@ const postReducer = (state = initialState, action) => {
                 profilePostsArray: state.profilePostsArray.find(profilePosts => profilePosts._id === action.payload._id)
                     ? EditData(state.profilePostsArray, action.payload._id,
                         {
-                            posts: [...state.profilePostsArray.find(profilePosts => profilePosts._id === action.payload._id).posts, ...action.payload.posts],
-                            _id: action.payload._id, result: action.payload.result, page: action.payload.page
+                            posts: !(action.payload.userAddedNewPost)
+                                ? [...state.profilePostsArray.find(profilePosts => profilePosts._id === action.payload._id).posts, ...action.payload.posts]
+                                : [action.payload.post, ...state.profilePostsArray.find(profilePosts => profilePosts._id === action.payload._id).posts],
+                            _id: action.payload._id,
+                            result: action.payload.userAddedNewPost
+                                ? state.profilePostsArray.find(profilePosts => profilePosts._id === action.payload._id).result
+                                : action.payload.result,
+                            page: action.payload.userAddedNewPost
+                                ? state.profilePostsArray.find(profilePosts => profilePosts._id === action.payload._id).page
+                                : action.payload.page
                         })
-                    : EditData(state.profilePostsArray, action.payload.userId, action.payload)
+                    : action.payload.userAddedNewPost ? [...state.profilePostsArray] : EditData(state.profilePostsArray, action.payload.userId, action.payload)
             };
         case POST_TYPES.UPDATE_POST:
             return {
@@ -107,10 +117,18 @@ const postReducer = (state = initialState, action) => {
                 userMedia: state.userMedia.find(user => user._id === action.payload._id)
                     ? EditData(state.userMedia, action.payload._id,
                         {
-                            media: [...state.userMedia.find(user => user._id === action.payload._id).media, ...action.payload.media],
-                            _id: action.payload._id, result: action.payload.result, page: action.payload.page
+                            media: !(action.payload.userAddedNewPost)
+                                ? [...state.userMedia.find(user => user._id === action.payload._id).media, ...action.payload.media]
+                                : [...action.payload.media, ...state.userMedia.find(user => user._id === action.payload._id).media],
+                            _id: action.payload._id,
+                            result: action.payload.userAddedNewPost
+                                ? state.userMedia.find(user => user._id === action.payload._id).result
+                                : action.payload.result,
+                            page: action.payload.userAddedNewPost
+                                ? state.userMedia.find(user => user._id === action.payload._id).page
+                                : action.payload.page
                         })
-                    : EditData(state.userMedia, action.payload._id, action.payload)
+                    : action.payload.userAddedNewPost ? [...state.userMedia] : EditData(state.userMedia, action.payload._id, action.payload)
             };
         default:
             return state;
