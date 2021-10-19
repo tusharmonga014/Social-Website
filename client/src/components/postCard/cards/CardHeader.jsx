@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import moment from "moment";
 import UserImage from "../../UserImage";
 import { BASE_URL } from "../../../utils/config";
@@ -13,6 +13,10 @@ const CardHeader = ({ post }) => {
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
     const history = useHistory();
+
+
+    const location = useLocation();
+    const { pathname } = location;
 
 
     const handleEditPost = () => {
@@ -42,9 +46,13 @@ const CardHeader = ({ post }) => {
 
                 <div className="ml-3 card-name">
                     <h6 className="m-0">
-                        <Link to={`/profile/${post.user._id}`} className="text-dark">
-                            {post.user.username}
-                        </Link>
+                        {
+                            pathname === `/profile/${post.user._id}`
+                                ? <span className="text-dark">{post.user.username}</span>
+                                : <Link to={`/profile/${post.user._id}`} className="text-dark">
+                                    {post.user.username}
+                                </Link>
+                        }
                     </h6>
                     <small className="text-muted">
                         {moment(post.createdAt).fromNow()}

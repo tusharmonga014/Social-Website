@@ -28,7 +28,7 @@ const ProfilePosts = () => {
             {
                 currentUserPostsData()
                     ?
-                    currentUserPostsData().result === 0
+                    currentUserPostsData().posts.length === 0 && currentUserPostsData().result === 0
                         ? <h2 className="text-center text-muted mt-5">No Posts</h2>
                         : <Posts posts={currentUserPostsData().posts} getMorePosts={getMorePosts}
                             result={currentUserPostsData().result} page={currentUserPostsData().page} />

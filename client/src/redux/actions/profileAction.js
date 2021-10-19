@@ -13,7 +13,7 @@ export const PROFILE_TYPES = {
 }
 
 
-export const getProfileUsers = (id, auth, defaultTab) => async (dispatch) => {
+export const getProfileUsers = (id, auth) => async (dispatch) => {
 
     dispatch({
         type: PROFILE_TYPES.GET_ID,
@@ -37,9 +37,6 @@ export const getProfileUsers = (id, auth, defaultTab) => async (dispatch) => {
             type: PROFILE_TYPES.GET_USER,
             payload: usersData
         });
-
-
-        defaultTab && dispatch(defaultTab.getComponentData(id, auth, 1));
 
 
         dispatch({

@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import Info from "../../components/profile/Info";
-import LoadIcon from "../../images/loading.gif";
 import { getProfileUsers } from "../../redux/actions/profileAction";
 import ProfilePosts from "../../components/profile/ProfilePosts";
-import { getUserPosts } from "../../redux/actions/postAction";
+import { getUserMedia, getUserPosts } from "../../redux/actions/postAction";
+import ProfilePhotos from "../../components/profile/ProfilePhotos";
 
-let scrollProfile = 0;
+var scrollProfile = 0;
 
 const Profile = () => {
 
-    const { profile, auth } = useSelector(state => state);
+    const { profile, auth, post } = useSelector(state => state);
     const dispatch = useDispatch();
     const { id } = useParams();
 
@@ -22,18 +22,23 @@ const Profile = () => {
             id: 'posts-tab',
             onlyAuthUser: false,
             getComponentData: getUserPosts,
+            dataPresent: (id) => post.profilePostsArray.find(profilePosts => profilePosts._id === id),
             component: <ProfilePosts />
         },
         {
             name: 'PHOTOS',
             id: 'photos-tab',
             onlyAuthUser: false,
-            component: <></>
+            getComponentData: getUserMedia,
+            dataPresent: (id) => post.userMedia.find(user => user._id === id),
+            component: <ProfilePhotos />
         },
         {
             name: 'SAVED',
             id: 'saved-tab',
             onlyAuthUser: true,
+            getComponentData: getUserMedia,
+            dataPresent: (id) => post.userMedia.find(user => user._id === id),
             component: <></>
         }
     ];
@@ -59,17 +64,19 @@ const Profile = () => {
 
 
     useEffect(() => {
+        if (!currentTab.dataPresent(id))
+            dispatch(currentTab.getComponentData(id, auth, 1));
         const allTabs = document.querySelectorAll('.profile-tab button');
         allTabs.forEach(tab => tab.classList.remove('active'));
         const selectedTab = document.getElementById(currentTab.id);
         selectedTab.classList.add('active');
-    }, [currentTab]);
+    }, [currentTab, dispatch, id, auth]);
 
 
     useEffect(() => {
         if (profile.ids.every(item => item !== id))
-            dispatch(getProfileUsers(id, auth, currentTab));
-    }, [id, auth, currentTab, dispatch, profile.ids]);
+            dispatch(getProfileUsers(id, auth));
+    }, [id, auth, dispatch, profile.ids]);
 
 
     return (
@@ -92,9 +99,7 @@ const Profile = () => {
             </div>
 
             {
-                profile.loading
-                    ? <img className="d-block mx-auto" src={LoadIcon} alt="loading" />
-                    : currentTab.component
+                currentTab.component
             }
 
         </div >

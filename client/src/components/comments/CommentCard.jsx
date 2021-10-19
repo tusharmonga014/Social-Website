@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import LikeButton from "../LikeButton";
@@ -12,6 +12,7 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
+    const location = useLocation();
 
 
     const [content, setContent] = useState('');
@@ -20,6 +21,9 @@ const CommentCard = ({ children, comment, post, commentId }) => {
 
     const [onEdit, setOnEdit] = useState(false);
     const [onReply, setOnReply] = useState(false);
+
+
+    const { pathname } = location;
 
 
     const handleUpdate = () => {
@@ -81,14 +85,23 @@ const CommentCard = ({ children, comment, post, commentId }) => {
     return (
         <div className="comment-card mt-2" style={styleCard}>
 
-
-            <Link to={`/profile/${comment.user._id}`} className="d-flex text-dark">
-                <UserImage src={comment.user.userImage} size="small" />
-                <small className="mx-1 ml-2 font-weight-bold">{comment.user.username}</small>
-                <small className="text-muted">
-                    {moment(comment.createdAt).fromNow()}
-                </small>
-            </Link>
+            {
+                pathname === `/profile/${comment.user._id}`
+                    ? <span className="d-flex text-dark">
+                        <UserImage src={comment.user.userImage} size="small" />
+                        <small className="mx-1 ml-2 font-weight-bold">{comment.user.username}</small>
+                        <small className="text-muted">
+                            {moment(comment.createdAt).fromNow()}
+                        </small>
+                    </span>
+                    : <Link to={`/profile/${comment.user._id}`} className="d-flex text-dark">
+                        <UserImage src={comment.user.userImage} size="small" />
+                        <small className="mx-1 ml-2 font-weight-bold">{comment.user.username}</small>
+                        <small className="text-muted">
+                            {moment(comment.createdAt).fromNow()}
+                        </small>
+                    </Link>
+            }
 
 
             <div className="comment-content">

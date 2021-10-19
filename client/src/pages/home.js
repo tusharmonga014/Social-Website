@@ -4,7 +4,7 @@ import HomePosts from "../components/home/HomePosts";
 import NewPost from "../components/home/newPost/NewPost";
 import RightSideBar from "../components/home/RightSideBar";
 
-let scrollHome = 0;
+var scrollHome = 0;
 
 const Home = () => {
 

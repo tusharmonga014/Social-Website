@@ -406,14 +406,16 @@ const postController = {
 
 
             /** Posts which have media. */
-            const mediaPosts = await Post.find({ user: userId, 'media.0': { '$exists': true } }).skip((page - 1) * limit).limit(limit);
+            const mediaPosts = await Post.find({ user: userId, 'media.0': { '$exists': true } })
+                .skip((page - 1) * limit).limit(limit)
+                .sort('-createdAt');
 
 
             /** Media to be sent. */
             const media = [];
             mediaPosts.map(mediaPost => {
-                mediaPost.media.map(mediaFile => {
-                    media.push({ ...mediaFile, postId: mediaPost._id });
+                mediaPost.media.map((value, index, mediaFiles) => {
+                    media.push({ ...mediaFiles[mediaFiles.length - 1 - index], postId: mediaPost._id });
                 });
             });
 

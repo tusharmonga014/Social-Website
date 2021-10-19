@@ -13,7 +13,8 @@ export const POST_TYPES = {
     ON_EDIT: 'ON_EDIT',
     REMOVE_POST: 'REMOVE_POST',
     GET_POST: 'GET_POST',
-    GET_USER_POSTS: 'GET_USER_POSTS'
+    GET_USER_POSTS: 'GET_USER_POSTS',
+    GET_USER_MEDIA: 'GET_USER_MEDIA'
 
 }
 
@@ -232,6 +233,12 @@ export const unlikePost = (post, auth) => async (dispatch) => {
 
 export const getPost = (id, auth) => async (dispatch) => {
 
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: true
+    });
+
+
     try {
 
         const res = await getDataAPI(`posts/${id}/get-post`, auth.token);
@@ -249,10 +256,22 @@ export const getPost = (id, auth) => async (dispatch) => {
         dispatch(setAlert({ getPostError: err.response }));
     }
 
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: false
+    });
+
 }
 
 
 export const getUserPosts = (id, auth, page, limit) => async (dispatch) => {
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: true
+    });
+
 
     try {
 
@@ -273,5 +292,48 @@ export const getUserPosts = (id, auth, page, limit) => async (dispatch) => {
 
         dispatch(setAlert({ getUserPostsError: err.response.data.msg }));
     }
+
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: false
+    });
+
+}
+
+
+export const getUserMedia = (id, auth, page, limit) => async (dispatch) => {
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: true
+    });
+
+
+    try {
+
+        limit = limit * 1 || 9;
+
+        const url = `posts/${id}/get-user-media?limit=${limit}&page=${page}`;
+        const res = await getDataAPI(url, auth.token);
+        const { media, result } = res.data;
+
+
+        dispatch({
+            type: POST_TYPES.GET_USER_MEDIA,
+            payload: { media, _id: id, result, page: page + 1 }
+        });
+
+
+    } catch (err) {
+
+        dispatch(setAlert({ getUserMediaError: err.response.data.msg }));
+    }
+
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: false
+    });
 
 }

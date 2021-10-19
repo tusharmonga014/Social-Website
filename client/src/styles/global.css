@@ -48,6 +48,9 @@ img {
 /* ------- Post Thumbnail ------ */
 
 @import url("./postThumbnail.css");
+/* ------- Icons ------ */
+
+@import url("./icons.css");
 /* --------- Responsive ------ */
 
 @media (max-width: 766px) {

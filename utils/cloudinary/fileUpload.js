@@ -6,7 +6,8 @@ const getFileType = require('../getFileType');
 const stream = (resolve, reject, fileType, cloudinaryPublicId) => cloudinary.uploader.upload_stream(
     {
         public_id: cloudinaryPublicId,
-        resource_type: fileType
+        resource_type: fileType,
+        fetch_format: 'auto'
     },
     (error, result) => {
         if (result) resolve(result);

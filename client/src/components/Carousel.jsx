@@ -1,4 +1,5 @@
 import React from "react";
+import getCostumoizedUrl from "../utils/convertImageUrlForQuality";
 
 
 const Carousel = ({ media, id }) => {
@@ -13,8 +14,9 @@ const Carousel = ({ media, id }) => {
 
             <ol className="carousel-indicators" style={{ zIndex: 1 }}>
                 {
+                    media.length > 1 &&
                     media.map((img, index) => (
-                        <li key={index} data-target={`#image${id}`}
+                        <li key={index} data-target={`#image${id}`} style={{ width: '5px', height: '5px', borderRadius: '100%' }}
                             data-slide-to={index} className={isActive(index)} />
                     ))
                 }
@@ -23,11 +25,11 @@ const Carousel = ({ media, id }) => {
             <div className="carousel-inner">
                 {
                     media.map((img, index) => (
-                        <div key={index} className={`carousel-item ${isActive(index)} w-100`}>
+                        <div key={index} className={`carousel-item ${isActive(index)}`} style={{ maxWidth: '550px' }}>
                             {
                                 img.url.match(/video/i)
-                                    ? <video controls src={img.url} className="d-block w-100" alt={img.url} />
-                                    : <img src={img.url} className="d-block w-100" alt={img.url} />
+                                    ? <video controls src={getCostumoizedUrl(img.url, 'w_800', true)} className="d-block w-100" alt={img.url} />
+                                    : <img src={getCostumoizedUrl(img.url, 'w_900', true)} className="d-block w-100" alt={img.url} />
                             }
                         </div>
                     ))
