@@ -502,6 +502,50 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    getSavedPosts: async (req, res) => {
+
+        try {
+
+            /** Ids of posts saved by the user. */
+            const savedPostsIds = req.user.saved;
+
+
+            /** Page to be returned for query. */
+            const page = req.query.page * 1 || 1;
+            /** Number of posts to be returned of mentioned page. */
+            const limit = req.query.limit * 1 || 9;
+
+
+            /** User's saved posts which are to be sent. */
+            const posts = await Post.find({ _id: { $in: savedPostsIds } })
+                .skip((page - 1) * limit).limit(limit)
+                .sort('-createdAt')
+                .populate('user', 'userImage username fullName followers')
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user',
+                        select: '-password'
+                    }
+                });
+
+
+            res.json({
+                msg: 'Saved Posts Sent.',
+                posts: posts,
+                result: posts.length
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
     }
 
 }

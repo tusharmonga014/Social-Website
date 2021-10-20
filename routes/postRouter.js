@@ -26,4 +26,6 @@ postRouter.patch('/:id/save-post', auth, postController.savePost);
 
 postRouter.patch('/:id/unsave-post', auth, postController.unsavePost);
 
+postRouter.get('/get-saved-posts', auth, postController.getSavedPosts);
+
 module.exports = postRouter;
