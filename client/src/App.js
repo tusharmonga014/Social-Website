@@ -1,22 +1,22 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { HashRouter as Router, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import { refreshToken } from "./redux/actions/authAction";
 import PageRender from "./customRouter/PageRender";
-import "./styles/global.css";
 import Header from "./components/header/Header";
 import PrivateRouter from "./customRouter/PrivateRouter";
 import NewPostModal from "./components/home/newPost/NewPostModal";
 import { getPosts } from "./redux/actions/postAction";
 import { getSuggestions } from "./redux/actions/suggestionsAction";
+import "./styles/global.css";
+
 
 function App() {
 
-
-  const { auth, post } = useSelector(state => state);
+  const { auth, post, suggestions } = useSelector(state => state);
   const dispatch = useDispatch();
 
 
@@ -26,11 +26,13 @@ function App() {
 
 
   useEffect(() => {
-    if (auth.token) {
-      dispatch(getPosts(auth, 1));
-      dispatch(getSuggestions(auth, 7));
-    }
-  }, [auth, auth.token, dispatch]);
+    if (auth.token && post.homePosts.posts.length === 0) dispatch(getPosts(auth, 1));
+  }, [auth, auth.token, post.homePosts.posts.length, dispatch]);
+
+
+  useEffect(() => {
+    if (auth.token && !suggestions.users) dispatch(getSuggestions(auth, 7));
+  }, [auth, auth.token, suggestions.users, dispatch]);
 
 
   return (

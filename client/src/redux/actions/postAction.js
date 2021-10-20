@@ -1,5 +1,5 @@
 import { postDataAPI, getDataAPI, patchDataAPI, deleteDataAPI } from "../../utils/fetchData";
-import { DeleteData } from "./TYPES";
+import { DeleteData, TYPES } from "./TYPES";
 import { setAlert } from "./alertAction";
 
 export const POST_TYPES = {
@@ -367,5 +367,67 @@ export const getUserMedia = (id, auth, page, limit) => async (dispatch) => {
         type: POST_TYPES.POSTS_LOADING,
         payload: false
     });
+
+}
+
+
+export const savePost = (post, auth) => async (dispatch) => {
+
+    const postId = post._id;
+    const updatedUser = { ...auth.user, saved: [postId, ...auth.user.saved] };
+
+
+    dispatch({
+        type: TYPES.AUTH,
+        payload: { ...auth, user: updatedUser }
+    });
+
+
+    try {
+
+        await patchDataAPI(`posts/${postId}/save-post`, null, auth.token);
+
+    } catch (err) {
+
+        const updatedUser = { ...auth.user, saved: DeleteData(auth.user.saved, postId) };
+        dispatch({
+            type: TYPES.AUTH,
+            payload: { ...auth, user: updatedUser }
+        });
+
+
+        dispatch(setAlert({ savePostError: err.response.data.msg }));
+    }
+
+}
+
+
+export const unsavePost = (post, auth) => async (dispatch) => {
+
+    const postId = post._id;
+    const updatedUser = { ...auth.user, saved: DeleteData(auth.user.saved, postId) };
+
+
+    dispatch({
+        type: TYPES.AUTH,
+        payload: { ...auth, user: updatedUser }
+    });
+
+
+    try {
+
+        await patchDataAPI(`posts/${postId}/unsave-post`, null, auth.token);
+
+    } catch (err) {
+
+        const updatedUser = { ...auth.user, saved: [postId, ...auth.user.saved] };
+        dispatch({
+            type: TYPES.AUTH,
+            payload: { ...auth, user: updatedUser }
+        });
+
+
+        dispatch(setAlert({ unsavePostError: err.response.data.msg }));
+    }
 
 }

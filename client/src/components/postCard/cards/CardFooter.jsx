@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import LikeButton from "../../LikeButton";
 import ShareModal from "../../ShareModal";
 import { BASE_URL } from "../../../utils/config";
-import { likePost, unlikePost } from "../../../redux/actions/postAction";
+import { likePost, savePost, unlikePost, unsavePost } from "../../../redux/actions/postAction";
 
 
 const CardFooter = ({ post }) => {
@@ -18,10 +18,6 @@ const CardFooter = ({ post }) => {
     const [isShare, setIsShare] = useState(false);
 
 
-    const [saved, setSaved] = useState(false);
-    const [saveLoad, setSaveLoad] = useState(false);
-
-
     const handleLike = () => {
         dispatch(likePost(post, auth));
     }
@@ -32,26 +28,14 @@ const CardFooter = ({ post }) => {
     }
 
 
-    const handleSavePost = async () => {
-        if (saveLoad) return;
-        setSaveLoad(true);
-        // await dispatch(savePost({ post, auth }))
-        setSaveLoad(false);
+    const handleSavePost = () => {
+        dispatch(savePost(post, auth));
     }
 
 
-    const handleUnSavePost = async () => {
-        if (saveLoad) return;
-        setSaveLoad(true);
-        // await dispatch(unSavePost({ post, auth }))
-        setSaveLoad(false);
+    const handleUnsavePost = () => {
+        dispatch(unsavePost(post, auth));
     }
-
-
-    // useEffect(() => {
-    // if (auth.user.saved.find(id => id === post._id)) setSaved(true);
-    // else setSaved(false);
-    // }, [auth.user.saved, post._id]);
 
 
     return (
@@ -74,9 +58,9 @@ const CardFooter = ({ post }) => {
                     <i className="fas fa-paper-plane" onClick={() => setIsShare(!isShare)}></i>
                 </div>
                 {
-                    saved
-                        ? <i className="fas fa-bookmark text-info"
-                            onClick={handleUnSavePost} />
+                    auth.user.saved.find(id => id === post._id)
+                        ? <i className="fas fa-bookmark text-dark"
+                            onClick={handleUnsavePost} />
 
                         : <i className="far fa-bookmark"
                             onClick={handleSavePost} />
