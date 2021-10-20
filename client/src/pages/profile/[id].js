@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import Info from "../../components/profile/Info";
 import { getProfileUsers } from "../../redux/actions/profileAction";
 import ProfilePosts from "../../components/profile/ProfilePosts";
-import { getUserMedia, getUserPosts } from "../../redux/actions/postAction";
+import { getSavedPosts, getUserMedia, getUserPosts } from "../../redux/actions/postAction";
 import ProfilePhotos from "../../components/profile/ProfilePhotos";
+import SavedPosts from "../../components/profile/SavedPosts";
 
 var scrollProfile = 0;
 
@@ -37,9 +38,9 @@ const Profile = () => {
             name: 'SAVED',
             id: 'saved-tab',
             onlyAuthUser: true,
-            getComponentData: getUserMedia,
-            dataPresent: (id) => post.userMedia.find(user => user._id === id),
-            component: <></>
+            getComponentData: getSavedPosts,
+            dataPresent: () => false,
+            component: <SavedPosts />
         }
     ];
 

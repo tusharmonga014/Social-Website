@@ -14,7 +14,8 @@ export const POST_TYPES = {
     REMOVE_POST: 'REMOVE_POST',
     GET_POST: 'GET_POST',
     GET_USER_POSTS: 'GET_USER_POSTS',
-    GET_USER_MEDIA: 'GET_USER_MEDIA'
+    GET_USER_MEDIA: 'GET_USER_MEDIA',
+    GET_SAVED_POSTS: 'GET_SAVED_POSTS'
 
 }
 
@@ -429,5 +430,43 @@ export const unsavePost = (post, auth) => async (dispatch) => {
 
         dispatch(setAlert({ unsavePostError: err.response.data.msg }));
     }
+
+}
+
+
+export const getSavedPosts = (id, auth, page, limit) => async (dispatch) => {
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: true
+    });
+
+
+    try {
+
+        limit = limit * 1 || 9;
+        page = page * 1 || 1;
+
+        const url = `posts/get-saved-posts?limit=${limit}&page=${page}`;
+        const res = await getDataAPI(url, auth.token);
+        const { posts, result } = res.data;
+
+
+        dispatch({
+            type: POST_TYPES.GET_SAVED_POSTS,
+            payload: { posts, result, page: page + 1 }
+        });
+
+
+    } catch (err) {
+
+        dispatch(setAlert({ getSavedPostsError: err.response.data.msg }));
+    }
+
+
+    dispatch({
+        type: POST_TYPES.POSTS_LOADING,
+        payload: false
+    });
 
 }

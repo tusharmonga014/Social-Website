@@ -11,7 +11,11 @@ const initialState = {
     },
     detailedPosts: [],
     profilePostsArray: [],
-    userMedia: []
+    userMedia: [],
+    savedPosts: {
+        posts: [],
+        page: 1
+    }
 };
 
 const postReducer = (state = initialState, action) => {
@@ -129,6 +133,16 @@ const postReducer = (state = initialState, action) => {
                                 : action.payload.page
                         })
                     : action.payload.userAddedNewPost ? [...state.userMedia] : EditData(state.userMedia, action.payload._id, action.payload)
+            };
+        case POST_TYPES.GET_SAVED_POSTS:
+            return {
+                ...state,
+                savedPosts: {
+                    posts: action.payload.page === 2
+                        ? action.payload.posts
+                        : [...state.savedPosts.posts, ...action.payload.posts],
+                    result: action.payload.result, page: action.payload.page
+                }
             };
         default:
             return state;
