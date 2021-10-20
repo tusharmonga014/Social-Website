@@ -39,7 +39,7 @@ const CardFooter = ({ post }) => {
 
 
     return (
-        <div className="card-footer">
+        <div className="card-footer p-0">
 
             <div className="card-icon-menu">
                 <div>
@@ -59,15 +59,15 @@ const CardFooter = ({ post }) => {
                 </div>
                 {
                     auth.user.saved.find(id => id === post._id)
-                        ? <i className="fas fa-bookmark text-dark"
+                        ? <i className="fas fa-bookmark text-dark mr-2"
                             onClick={handleUnsavePost} />
 
-                        : <i className="far fa-bookmark"
+                        : <i className="far fa-bookmark mr-2"
                             onClick={handleSavePost} />
                 }
             </div>
 
-            <div className="d-flex post-likes-comments text-muted">
+            <div className="d-flex post-likes-comments text-muted ml-1 mx-2 mb-1">
                 <span style={{ padding: '0 4px' }} className="mr-2">
                     {post.likes.length} likes
                 </span>

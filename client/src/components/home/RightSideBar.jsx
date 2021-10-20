@@ -50,7 +50,7 @@ const RightSideBar = () => {
                 </div>
 
                 <div className="d-block">
-                    <small>TUSHAR MONGA PRODUCTION</small>
+                    <small>&nbsp;Made by Tushar Monga </small>
                     <a href="https://linkedin.com/in/tusharmonga014" target="blank">
                         <i className="fab fa-linkedin ml-2 text-dark" />
                     </a>

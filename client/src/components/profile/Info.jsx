@@ -10,8 +10,10 @@ const Info = ({ id, auth, profile, dispatch }) => {
     const [userData, setUserData] = useState([]);
     // const [onEdit, setOnEdit] = useState(false);
 
+
     const [showFollowers, setShowFollowers] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
+
 
     useEffect(() => {
         if (id === auth.user._id) {
@@ -24,11 +26,11 @@ const Info = ({ id, auth, profile, dispatch }) => {
 
 
     // useEffect(() => {
-        // if(showFollowers || showFollowing || onEdit){
-        //     dispatch({ type: GLOBALTYPES.MODAL, payload: true})
-        // }else{
-        //     dispatch({ type: GLOBALTYPES.MODAL, payload: false})
-        // }
+    // if(showFollowers || showFollowing || onEdit){
+    //     dispatch({ type: GLOBALTYPES.MODAL, payload: true})
+    // }else{
+    //     dispatch({ type: GLOBALTYPES.MODAL, payload: false})
+    // }
     // }, [showFollowers, showFollowing, onEdit, dispatch])
 
 
@@ -64,7 +66,7 @@ const Info = ({ id, auth, profile, dispatch }) => {
                                 </span>
                             </div>
 
-                            <h6>{user.fullname} <span className="text-danger">{user.mobile}</span></h6>
+                            <h6>{user.fullname}</h6>
                             <p className="m-0">{user.address}</p>
                             <h6 className="m-0">{user.email}</h6>
                             <a href={user.website} target="_blank" rel="noreferrer">
@@ -95,7 +97,7 @@ const Info = ({ id, auth, profile, dispatch }) => {
                 ))
             }
         </div>
-    )
+    );
 }
 
 export default Info;

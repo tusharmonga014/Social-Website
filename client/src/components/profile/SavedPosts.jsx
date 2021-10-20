@@ -24,7 +24,7 @@ const SavedPosts = () => {
 
 
     return (
-        <div className="col-md-10 mx-auto">
+        <div className="col-md-10 mx-auto p-0">
             {
                 currentSavedPostsData()
                     ?

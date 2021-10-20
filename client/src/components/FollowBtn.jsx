@@ -25,7 +25,7 @@ const FollowBtn = ({ user }) => {
 
         setFollowed(true);
         setLoad(true);
-        await dispatch(follow({ users: profile.users, user, auth, socket }));
+        dispatch(follow({ users: profile.users, user, auth, socket }));
         setLoad(false);
     }
 
@@ -35,7 +35,7 @@ const FollowBtn = ({ user }) => {
 
         setFollowed(false);
         setLoad(true);
-        await dispatch(unfollow({ users: profile.users, user, auth, socket }));
+        dispatch(unfollow({ users: profile.users, user, auth, socket }));
         setLoad(false);
     }
 
@@ -44,7 +44,7 @@ const FollowBtn = ({ user }) => {
         <>
             {
                 followed
-                    ? <button className="btn btn-outline-danger"
+                    ? <button className="btn btn-outline-info btn-info text-white"
                         onClick={handleUnFollow}>
                         Following
                     </button>
@@ -54,7 +54,7 @@ const FollowBtn = ({ user }) => {
                     </button>
             }
         </>
-    )
+    );
 }
 
 export default FollowBtn;

@@ -30,7 +30,7 @@ const Home = () => {
     return (
         <div className="home row mx-0">
 
-            <div className="col-md-8">
+            <div className="col-md-8 p-0">
                 <NewPost />
                 {
                     (homePosts.result === 0 && homePosts.posts.length === 0)

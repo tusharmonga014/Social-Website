@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema({
 
     userImage: {
         type: String,
-        default: 'https://image.flaticon.com/icons/png/512/17/17004.png'
+        default: 'https://stat1.moneycontrol.com/mcnews/ms/assets/images/earth-360/default-author.png'
     },
 
     gender: {
