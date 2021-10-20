@@ -8,9 +8,9 @@ const CardBody = ({ post }) => {
 
 
     return (
-        <div className="card-body">
+        <div className="card-body m-0">
 
-            <div className="card-body-content ml-5 mb-3 mt-2 text-dark lead" style={{ fontWeight: '400' }}>
+            <div className="card-body-content ml-5 text-dark lead" style={{ fontWeight: '400', margin: post.content ? '7px 0' : '0' }}>
                 <span>
                     {
                         post.content.length < 60
