@@ -432,6 +432,76 @@ const postController = {
             return res.status(500).json({ msg: err.message });
         }
 
+    },
+
+
+
+    savePost: async (req, res) => {
+
+        try {
+
+            /** Id of user who wants to save the post. */
+            const userId = req.user._id;
+
+
+            /** Id of the post which is to be saved. */
+            const postId = req.params.id;
+
+            /** Post which is to be saved. */
+            const post = await Post.findById(postId);
+            if (!post) return res.status(404).json({ msg: 'This post does not exist.' });
+
+
+            /** Requesting user who did not had the post saved. */
+            const user = await User.findOneAndUpdate({ _id: userId, saved: { $nin: postId } }, { $push: { saved: { $each: [postId], $position: 0 } } });
+            if (!user) return res.status(400).json({ msg: 'The user has already saved the post.' });
+
+
+            res.json({
+                msg: 'Post Saved.'
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
+    },
+
+
+
+    unsavePost: async (req, res) => {
+
+        try {
+
+            /** Id of user who wants to unsave the post. */
+            const userId = req.user._id;
+
+
+            /** Id of the post which is to be unsaved. */
+            const postId = req.params.id;
+
+            /** Post which is to be unsaved. */
+            const post = await Post.findById(postId);
+            if (!post) return res.status(404).json({ msg: 'This post does not exist.' });
+
+
+            /** Requesting user who has already saved the post. */
+            const user = await User.findOneAndUpdate({ _id: userId, saved: { $in: postId } }, { $pull: { saved: postId } });
+            if (!user) return res.status(400).json({ msg: 'The user has not saved the post.' });
+
+
+            res.json({
+                msg: 'Post Unsaved.'
+            });
+
+
+        } catch (err) {
+
+            return res.status(500).json({ msg: err.message });
+        }
+
     }
 
 }

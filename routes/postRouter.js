@@ -22,4 +22,8 @@ postRouter.get('/:id/get-post', auth, postController.getPost);
 
 postRouter.get('/:id/get-user-media', auth, postController.getUserMedia);
 
+postRouter.patch('/:id/save-post', auth, postController.savePost);
+
+postRouter.patch('/:id/unsave-post', auth, postController.unsavePost);
+
 module.exports = postRouter;
