@@ -57,6 +57,7 @@ const Login = () => {
                     <label htmlFor="username-email">Username or Email</label>
                     <input id="username-email" className="form-control username-email-input" type="text" placeholder="Enter username or email"
                         name="usernameOrEmail" value={usernameOrEmail} onChange={handleInputChange} required autoFocus />
+                    <small className="form-text text-muted ml-1">Testing email : &nbsp;johndoe@example.com</small>
                     <small className="form-text text-danger ml-1">{alert.usernameOrEmail ? alert.usernameOrEmail : ""}</small>
                 </div>
 
@@ -68,6 +69,7 @@ const Login = () => {
                             name="password" value={password} onChange={handleInputChange} required />
                         <span className="fa fa-eye password-show-toggle" onClick={passwordShowToggle}></span>
                     </div>
+                    <small className="form-text text-muted ml-1">Testing password : &nbsp;test@123</small>
                     <small className="form-text text-danger ml-1">{alert.password ? alert.password : ""}</small>
                 </div>
 

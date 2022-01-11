@@ -12,12 +12,14 @@ const NewPost = () => {
     return (
 
         <div className="new-post my-3 d-flex">
-            
+
             <UserImage src={auth.user.userImage} size="big" />
 
             <button className="new-post-btn flex-fill"
                 onClick={() => dispatch({ type: POST_TYPES.NEW_POST_MODAL, payload: true })}>
-                {auth.user.username}, what are you thinking?
+                <div className="m-2">
+                    {auth.user.username}, what are you thinking?
+                </div>
             </button>
 
         </div>
