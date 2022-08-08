@@ -14,7 +14,7 @@ const Header = () => {
                 <Link to="/" className="logo">
                     <h1 className="navbar-brand text-uppercase p-0 m-0"
                         onClick={() => window.scrollTo({ top: 0 })}>
-                        Social Website
+                        Social Circle
                     </h1>
                 </Link>
 
